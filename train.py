@@ -21,7 +21,7 @@ CONFIG = {
     'num_classes': 10,
     'use_cuda': True,
     'batch_size': 64,
-    'epochs': 30,
+    'epochs': 20,
     'poly': 0.9,
     'optim': {
         'method': 'adam',
@@ -155,7 +155,7 @@ class Trainer():
         for epoch in range(1, self.config['epochs']+1):
             print('\n============ train epoch [%2d/%2d] =================' % (epoch, self.config['epochs']))
             self.train_one_epoch(epoch)
-        runtime = int(time.time() - self.start_time) // 60
+        runtime = int(time.time() - self.start_time) / 60
         print('\n[Time]: %.2fmins\n[Best Pred]: %.2f%s' % (runtime, self.best_pred, '%'))
 
 if __name__ == '__main__':
