@@ -18,7 +18,9 @@ from net.dataset import get_dataset
 from config import get_config
 
 PATH = os.getcwd()
-CONFIG = get_config(sys.argv[1])
+EXP_ID = sys.argv[1]
+DATE = EXP_ID.split('_')[0]
+CONFIG = get_config(EXP_ID)
 
 class Trainer():
     def __init__(self, config):
@@ -27,7 +29,7 @@ class Trainer():
         # init trainer
         self.best_pred = 0.0
         self.start_time = time.time()
-        self.path = os.path.join(PATH, 'results', str(int(self.start_time)))
+        self.path = os.path.join(PATH, 'results', DATE, EXP_ID)
         if not os.path.isdir(self.path):
             os.makedirs(self.path)
         self.init_seed(self.config['seed'])
@@ -102,7 +104,7 @@ class Trainer():
             self.scheduler(self.optimizer, self.writer, batch_idx, epoch, self.best_pred)
             self.optimizer.zero_grad()
             output = self.model(data)
-            loss = F.nll_loss(output, target)
+            loss = F.cross_entropy(output, target)
             loss.backward()
             self.optimizer.step()
             if batch_idx % self.log_interval == 0:
@@ -119,7 +121,7 @@ class Trainer():
             if self.use_cuda:
                 data, target = data.to(self.device), target.to(self.device)
             output = self.model(data)
-            loss += F.nll_loss(output, target, reduction='sum').item()
+            loss += F.cross_entropy(output, target, reduction='sum').item()
             pred = output.data.max(1, keepdim=True)[1]
             correct += pred.eq(target.data.view_as(pred)).cpu().sum()
         accuracy = 100. * correct / len(data_loader.dataset)

@@ -6,16 +6,16 @@ import torch.nn.functional as F
 from net.basic import *
 
 class RepVGG_CIFAR(nn.Module):
-    def __init__(self, act='relu', use_att=False, num_classes=10):
+    def __init__(self, act='relu', att='idt', att_kwargs={}, num_classes=10,
+                    blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512]):
         super().__init__()
 
         self.act = act
-        self.use_att = use_att
-
-        self.planes = 64
-        self.blocks_seq = [1, 3, 4, 1]
-        self.planes_seq = [64, 128, 256, 512]
-        assert self.planes == self.planes_seq[0]
+        self.att = att
+        self.att_kwargs = att_kwargs
+        self.blocks_seq = blocks_seq
+        self.planes_seq = planes_seq
+        self.planes = planes_seq[0]
         assert len(self.blocks_seq) == len(self.planes_seq)
 
         self.block0 = ConvBnActPool(
@@ -40,13 +40,15 @@ class RepVGG_CIFAR(nn.Module):
         )
     
     def _make_block(self, planes, num_blocks):
+        assert (planes > 0) and (num_blocks > 0)
         blocks = []
         for i in range(num_blocks):
             blocks.append(RepVGG_Module(
                 in_channels=self.planes,
                 out_channels=planes,
                 act=self.act,
-                use_att=self.use_att
+                att=self.att,
+                att_kwargs=self.att_kwargs
             ))
             self.planes = planes
         return nn.Sequential(*blocks)
@@ -55,7 +57,8 @@ class RepVGG_CIFAR(nn.Module):
         out = self.block0(x)
         for i in range(len(self.planes_seq)):
             out = self.__getattr__('block%d' % (i+1))(out)
-        return F.log_softmax(self.fc(out), dim=1)
+        return self.fc(out)
+        # return F.log_softmax(self.fc(out), dim=1)
 
 # Test Version
 class HMDNet(nn.Module):
@@ -87,7 +90,8 @@ class HMDNet(nn.Module):
         b, _, _, _ = x.size()
         x = self.conv_unit(x).view(b, -1)
         x = self.fc_unit(x)
-        return F.log_softmax(x, dim=1)
+        return x
+        # return F.log_softmax(x, dim=1)
 
 def get_model(model_name, model_config):
     avail_models = {
