@@ -155,7 +155,7 @@ class Trainer():
             print('\n============ train epoch [%2d/%2d] =================' % (epoch, self.config['epochs']))
             self.train_one_epoch(epoch)
         runtime = int(time.time() - self.start_time) / 60
-        print('\n[Time]: %.2fmins\n[Best Pred]: %.2f%s' % (runtime, self.best_pred, '%'))
+        print('\n[Time]: %d mins\n[Best Pred]: %.2f%s' % (runtime, self.best_pred, '%'))
 
 if __name__ == '__main__':
     if len(sys.argv) > 2:
