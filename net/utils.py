@@ -14,12 +14,12 @@ class Poly_LR_Scheduler(object):
         T = epoch * self.iters_per_epoch + i
         if self.curr_lr > self.thresh:
             lr = self.base_lr * pow((1 - 1.0 * T / self.total_iters), self.base_poly)
-            if (not self.quiet) and (epoch != self.epoch):
-                self.epoch = epoch
-                writer.add_scalar('lr', lr, epoch)
-                print('=> Epoch %i, lr = %.4f, best_pred = %.2f%s' % (epoch, lr, best_pred, '%'))
             self._adjust_learning_rate(optimizer, lr)
             self.curr_lr = lr
+        if (not self.quiet) and (epoch != self.epoch):
+            self.epoch = epoch
+            writer.add_scalar('lr', self.curr_lr, epoch)
+            print('=> Epoch %i, lr = %.4f, best_pred = %.2f%s' % (epoch, self.curr_lr, best_pred, '%'))
 
     def _adjust_learning_rate(self, optimizer, lr):
         for i in range(len(optimizer.param_groups)):

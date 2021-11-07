@@ -1,35 +1,24 @@
 
 import os
+import sys
 import time
+import random
+import numpy as np
 
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
+from torchsummary import summary
 
 from net.utils import *
 from net.model import get_model
 from net.dataset import get_dataset
+from config import get_config
 
 PATH = os.getcwd()
-CONFIG = {
-    'seed': 0,
-    'aug': False,
-    'model': 'hmd',
-    'dataset': 'cifar10',
-    'num_classes': 10,
-    'use_cuda': True,
-    'batch_size': 64,
-    'epochs': 20,
-    'poly': 0.9,
-    'optim': {
-        'method': 'adam',
-        'lr': 0.001,
-    },
-    'dump_summary': True,
-    'export_bound': 100
-}
+CONFIG = get_config(sys.argv[1])
 
 class Trainer():
     def __init__(self, config):
@@ -41,7 +30,8 @@ class Trainer():
         self.path = os.path.join(PATH, 'results', str(int(self.start_time)))
         if not os.path.isdir(self.path):
             os.makedirs(self.path)
-        torch.manual_seed(self.config['seed'])
+        self.init_seed(self.config['seed'])
+        print('[Seed]: %s' % self.config['seed'])
         print('[Path]: %s' % self.path)
         print('[Config]: %s\n' % self.config)
 
@@ -66,8 +56,9 @@ class Trainer():
         self.device = torch.device('cuda:0' if self.use_cuda else 'cpu')
         self.model = get_model(
             model_name=self.config['model'],
-            num_classes=self.config['num_classes'],
+            model_config=self.config['model_config']
         ).to(self.device)
+        summary(self.model, (3, 32, 32))
         print(self.model)
 
         # init optim
@@ -95,6 +86,12 @@ class Trainer():
         # init summary writer
         if self.config['dump_summary']:
             self.writer = SummaryWriter(self.path)
+
+    def init_seed(self, seed):
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
 
     def train_one_epoch(self, epoch):
         self.model.train()
@@ -159,5 +156,9 @@ class Trainer():
         print('\n[Time]: %.2fmins\n[Best Pred]: %.2f%s' % (runtime, self.best_pred, '%'))
 
 if __name__ == '__main__':
+    if len(sys.argv) > 2:
+        print('testing mode...')
+        CONFIG['use_cuda'] = False
+        CONFIG['batch_size'] = 2
     trainer = Trainer(config=CONFIG)
     trainer.train()

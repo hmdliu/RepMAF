@@ -3,6 +3,60 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from net.basic import *
+
+class RepVGG_CIFAR(nn.Module):
+    def __init__(self, act='relu', use_att=False, num_classes=10):
+        super().__init__()
+
+        self.act = act
+        self.use_att = use_att
+
+        self.planes = 64
+        self.blocks_seq = [1, 3, 4, 1]
+        self.planes_seq = [64, 128, 256, 512]
+        assert self.planes == self.planes_seq[0]
+        assert len(self.blocks_seq) == len(self.planes_seq)
+
+        self.block0 = ConvBnActPool(
+            in_channels=3,
+            out_channels=self.planes,
+            kernel_size=5,
+            padding=2,
+            act=act,
+            pool=True
+        )
+        for i in range(len(self.planes_seq)):
+            self.add_module('block%d' % (i+1), self._make_block(
+                planes=self.planes_seq[i],
+                num_blocks=self.blocks_seq[i]
+            ))
+        
+        self.fc = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Dropout(p=0.5),
+            nn.Flatten(),
+            nn.Linear(self.planes_seq[-1], num_classes)
+        )
+    
+    def _make_block(self, planes, num_blocks):
+        blocks = []
+        for i in range(num_blocks):
+            blocks.append(RepVGG_Module(
+                in_channels=self.planes,
+                out_channels=planes,
+                act=self.act,
+                use_att=self.use_att
+            ))
+            self.planes = planes
+        return nn.Sequential(*blocks)
+
+    def forward(self, x):
+        out = self.block0(x)
+        for i in range(len(self.planes_seq)):
+            out = self.__getattr__('block%d' % (i+1))(out)
+        return F.log_softmax(self.fc(out), dim=1)
+
 # Test Version
 class HMDNet(nn.Module):
     def __init__(self, num_classes=10):
@@ -35,43 +89,16 @@ class HMDNet(nn.Module):
         x = self.fc_unit(x)
         return F.log_softmax(x, dim=1)
 
-class IRB_Block(nn.Module):
-    def __init__(self, in_feats, out_feats, pool=True, expand_ratio=6):
-        super().__init__()
-        mid_feats = round(in_feats * expand_ratio)
-        self.pool = pool
-        self.irb_unit = nn.Sequential(
-            # point-wise conv
-            nn.Conv2d(in_feats, mid_feats, kernel_size=1, stride=1, padding=0, bias=False),
-            nn.BatchNorm2d(mid_feats),
-            nn.ReLU6(inplace=True),
-            # depth-wise conv
-            nn.Conv2d(mid_feats, mid_feats, kernel_size=3, stride=1, padding=1, groups=mid_feats, bias=False),
-            nn.BatchNorm2d(mid_feats),
-            nn.ReLU6(inplace=True),
-            # point-wise conv
-            nn.Conv2d(mid_feats, out_feats, kernel_size=1, stride=1, padding=0, bias=False),
-            nn.BatchNorm2d(out_feats),
-        )
-
-    def forward(self, x):
-        return F.max_pool2d(self.irb_unit(x), 2) if self.pool else self.irb_unit(x)
-
-class SimAM_Block(torch.nn.Module):
-    def __init__(self, in_feats, lamb=1e-4):
-        super().__init__()
-        self.act = nn.Sigmoid()
-        self.lamb = lamb
-
-    def forward(self, x):
-        _, _, h, w = x.size()
-        n = w * h - 1
-        x_minus_mu_square = (x - x.mean(dim=[2,3], keepdim=True)).pow(2)
-        y = x_minus_mu_square / (4 * (x_minus_mu_square.sum(dim=[2,3], keepdim=True) / n + self.lamb)) + 0.5
-        return x * self.act(y)
-
-def get_model(model_name, num_classes):
+def get_model(model_name, model_config):
     avail_models = {
         'hmd': HMDNet,
+        'repvgg_cifar': RepVGG_CIFAR
     }
-    return avail_models[model_name](num_classes=num_classes)
+    return avail_models[model_name](**model_config)
+
+if __name__ == '__main__':
+    test_model = get_model(
+        model_name='repvgg_cifar',
+        model_config={'use_att': True, 'num_classes': 10, 'act':'relu'}
+    )
+    print(test_model)

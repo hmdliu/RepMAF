@@ -13,4 +13,4 @@ module purge
 singularity exec --nv \
 	    --overlay /scratch/hl3797/GACV-F2021/pytorch1.8.0-cuda11.1.ext3:ro \
 	    /scratch/work/public/singularity/cuda11.1-cudnn8-devel-ubuntu18.04.sif \
-	    /bin/bash -c "source /ext3/env.sh; python train.py"
+	    /bin/bash -c "source /ext3/env.sh; python train.py $1 > $1.log 2>&1"
