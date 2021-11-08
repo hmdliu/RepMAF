@@ -49,6 +49,12 @@ def get_config(info):
             'x': {'blocks_seq': [1, 3, 5], 'planes_seq': [64, 128, 256]},
             'y': {'blocks_seq': [1, 3, 4, 1], 'planes_seq': [64, 128, 256, 512]},
             'z': {'blocks_seq': [1, 3, 4, 1], 'planes_seq': [64, 128, 256, 1024]},
+            '1': {'blocks_seq': [1, 3, 2, 1], 'planes_seq': [64, 128, 256, 512]},
+            '2': {'blocks_seq': [1, 3, 4, 1], 'planes_seq': [64, 128, 256, 512]},
+            '3': {'blocks_seq': [1, 3, 6, 1], 'planes_seq': [64, 128, 256, 512]},
+            '4': {'blocks_seq': [1, 3, 8, 1], 'planes_seq': [64, 128, 256, 512]},
+            '5': {'blocks_seq': [1, 3, 4, 2], 'planes_seq': [64, 128, 256, 512]},
+            '6': {'blocks_seq': [1, 3, 4, 4], 'planes_seq': [64, 128, 256, 512]},
         }
         att_dict = {
             'i': {'att': 'idt', 'att_kwargs': {}},
