@@ -3,7 +3,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from net.basic import *
+try:
+    # calling from train
+    from net.basic import *
+except:
+    # calling from __main__
+    from basic import *
 
 class RepVGG_CIFAR(nn.Module):
     def __init__(self, act='relu', att='idt', att_kwargs={}, num_classes=10,
@@ -103,6 +108,11 @@ def get_model(model_name, model_config):
 if __name__ == '__main__':
     test_model = get_model(
         model_name='repvgg_cifar',
-        model_config={'use_att': True, 'num_classes': 10, 'act':'relu'}
+        model_config={
+            'act': 'relu',
+            'att': 'sem',
+            'att_kwargs': {},
+            'num_classes': 10, 
+        }
     )
     print(test_model)
