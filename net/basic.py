@@ -24,8 +24,10 @@ class ConvBnActPool(nn.Sequential):
         super().__init__()
         act_dict = {
             'idt': nn.Identity,
+            'gelu': nn.GELU,
             'relu': nn.ReLU,
             'silu': nn.SiLU,
+            'tanh': nn.Tanh,
             'hardswish': nn.Hardswish,
         }
         self.add_module('conv', nn.Conv2d(
@@ -46,8 +48,10 @@ class RepVGG_Module(nn.Module):
         super().__init__()
         act_dict = {
             'idt': nn.Identity,
+            'gelu': nn.GELU,
             'relu': nn.ReLU,
             'silu': nn.SiLU,
+            'tanh': nn.Tanh,
             'hardswish': nn.Hardswish,
         }
         att_dict = {

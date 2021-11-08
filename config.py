@@ -41,6 +41,8 @@ def get_config(info):
             'i': 'idt',
             'r': 'relu',
             's': 'silu',
+            't': 'tanh',
+            'g': 'gelu',
             'h': 'hardswish',
         }
         seq_dict = {
