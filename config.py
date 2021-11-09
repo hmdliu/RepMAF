@@ -31,20 +31,28 @@ EPOCH_NUM_DICT = {
     'e': 100, 'f': 120, 'g': 150, 'h': 200
 }
 
+ATT_DICT = {
+    'i': {'att': 'idt', 'att_kwargs': {}},
+    'p': {'att': 'se', 'att_kwargs': {}},
+    'q': {'att': 'sem', 'att_kwargs': {}},
+    'r': {'att': 'simam', 'att_kwargs': {}},
+}
+
+ACT_DICT = {
+    'i': 'idt',
+    'r': 'relu',
+    's': 'silu',
+    't': 'tanh',
+    'g': 'gelu',
+    'h': 'hardswish',
+}
+
 def get_config(info):
     config = deepcopy(TEMPLATE)
     date, setting = tuple(info.split('_'))
     if date == '1106':
         config['model_config']['use_att'] = (setting[0] == 't')
     elif date == '1107':
-        act_dict = {
-            'i': 'idt',
-            'r': 'relu',
-            's': 'silu',
-            't': 'tanh',
-            'g': 'gelu',
-            'h': 'hardswish',
-        }
         seq_dict = {
             'x': {'blocks_seq': [1, 3, 5], 'planes_seq': [64, 128, 256]},
             'y': {'blocks_seq': [1, 3, 4, 1], 'planes_seq': [64, 128, 256, 512]},
@@ -56,17 +64,21 @@ def get_config(info):
             '5': {'blocks_seq': [1, 3, 4, 2], 'planes_seq': [64, 128, 256, 512]},
             '6': {'blocks_seq': [1, 3, 4, 4], 'planes_seq': [64, 128, 256, 512]},
         }
-        att_dict = {
-            'i': {'att': 'idt', 'att_kwargs': {}},
-            'p': {'att': 'se', 'att_kwargs': {}},
-            'q': {'att': 'sem', 'att_kwargs': {}},
-            'r': {'att': 'simam', 'att_kwargs': {}},
-        }
         config['optim'] = get_optim_dict(setting[:2])
         config['epochs'] = EPOCH_NUM_DICT[setting[2]]
-        config['model_config']['act'] = act_dict[setting[3]]
+        config['model_config']['act'] = ACT_DICT[setting[3]]
         config['model_config'].update(seq_dict[setting[4]])
-        config['model_config'].update(att_dict[setting[5]])
+        config['model_config'].update(ATT_DICT[setting[5]])
+    elif date == '1108':
+        # default settings
+        config['epochs'] = 30
+        config['optim'] = get_optim_dict('sj')
+        config['model_config']['act'] = 'relu'
+        config['model_config']['blocks_seq'] = [1, 3, 4, 1]
+        config['model_config']['planes_seq'] = [64, 128, 256, 512]
+        # experiments
+        config['model_config'].update(ATT_DICT[setting[0]])
+        config['model_config']['in_pool'] = (setting[1] == 't')
     else:
         raise ValueError('Invalid Date: %s' % date)
     return config

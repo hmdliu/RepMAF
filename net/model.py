@@ -12,7 +12,7 @@ except:
 
 class RepVGG_CIFAR(nn.Module):
     def __init__(self, act='relu', att='idt', att_kwargs={}, num_classes=10,
-                    blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512]):
+                    blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], **kwargs):
         super().__init__()
 
         self.act = act
@@ -29,7 +29,7 @@ class RepVGG_CIFAR(nn.Module):
             kernel_size=5,
             padding=2,
             act=act,
-            pool=True
+            pool=kwargs.get('in_pool', True)
         )
         for i in range(len(self.planes_seq)):
             self.add_module('block%d' % (i+1), self._make_block(
@@ -112,7 +112,7 @@ if __name__ == '__main__':
             'act': 'relu',
             'att': 'sem',
             'att_kwargs': {},
-            'num_classes': 10, 
+            'num_classes': 10,
         }
     )
     print(test_model)

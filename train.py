@@ -142,7 +142,6 @@ class Trainer():
             self.writer.add_scalar('loss/train', train_loss, self.curr_epoch)
             self.writer.add_scalar('accuracy/val', val_acc, self.curr_epoch)
             self.writer.add_scalar('loss/val', val_loss, self.curr_epoch)
-        print('==================================================')
     
     def export_weights(self, accuracy):
         curr_info = '%02d_%.2f' % (self.curr_epoch, accuracy)
@@ -154,6 +153,7 @@ class Trainer():
         for epoch in range(1, self.config['epochs']+1):
             print('\n============ train epoch [%2d/%2d] =================' % (epoch, self.config['epochs']))
             self.train_one_epoch(epoch)
+            print('==================================================')
         runtime = int(time.time() - self.start_time) / 60
         print('\n[Time]: %d mins\n[Best Pred]: %.2f%s' % (runtime, self.best_pred, '%'))
 
