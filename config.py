@@ -49,7 +49,14 @@ ACT_DICT = {
 
 def get_config(info):
     config = deepcopy(TEMPLATE)
-    date, setting = tuple(info.split('_'))
+    if len(info.split('_')) == 2:
+        data, setting = tuple(info.split('_'))
+    else:
+        date, setting, dataset = tuple(info.split('_'))
+        if dataset == '100':
+            config['dataset'] = 'cifar100'
+            config['model_config']['num_classes'] = 100
+    '''
     if date == '1106':
         config['model_config']['use_att'] = (setting[0] == 't')
     elif date == '1107':
@@ -81,9 +88,28 @@ def get_config(info):
         config['model_config']['in_pool'] = (setting[1] == 't')
     else:
         raise ValueError('Invalid Date: %s' % date)
+    '''
+
+    seq_dict = {
+        'x': {'blocks_seq': [1, 3, 5], 'planes_seq': [64, 128, 256]},
+        'y': {'blocks_seq': [1, 3, 4, 1], 'planes_seq': [64, 128, 256, 512]},
+        'z': {'blocks_seq': [1, 3, 4, 1], 'planes_seq': [64, 128, 256, 1024]},
+        '1': {'blocks_seq': [1, 3, 2, 1], 'planes_seq': [64, 128, 256, 512]},
+        '2': {'blocks_seq': [1, 3, 4, 1], 'planes_seq': [64, 128, 256, 512]},
+        '3': {'blocks_seq': [1, 3, 6, 1], 'planes_seq': [64, 128, 256, 512]},
+        '4': {'blocks_seq': [1, 3, 8, 1], 'planes_seq': [64, 128, 256, 512]},
+        '5': {'blocks_seq': [1, 3, 4, 2], 'planes_seq': [64, 128, 256, 512]},
+        '6': {'blocks_seq': [1, 3, 4, 4], 'planes_seq': [64, 128, 256, 512]},
+    }
+
+    config['optim'] = get_optim_dict(setting[:2]) # optimizer and lr
+    config['epochs'] = EPOCH_NUM_DICT[setting[2]] # number of epochs
+    config['model_config']['act'] = ACT_DICT[setting[3]] # activation function
+    config['model_config'].update(seq_dict[setting[4]]) # repvgg blocks and width
+    config['model_config'].update(ATT_DICT[setting[5]]) # attention module
     return config
 
-def get_optim_dict(info):
+def get_optim_dict(info): # first letter in arg after '_' indicates optimizer, second is lr
     assert len(info) == 2
     lr_dict = {
         'a': 0.001, 'b': 0.003, 'c': 0.005, 'd': 0.007,

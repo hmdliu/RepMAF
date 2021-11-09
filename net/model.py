@@ -10,7 +10,8 @@ except:
     # calling from __main__
     from basic import *
 
-class RepVGG_CIFAR(nn.Module):
+
+class RepVGG_CIFAR(nn.Module): # RepVGG CIFAR module
     def __init__(self, act='relu', att='idt', att_kwargs={}, num_classes=10,
                     blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], **kwargs):
         super().__init__()
@@ -23,7 +24,7 @@ class RepVGG_CIFAR(nn.Module):
         self.planes = planes_seq[0]
         assert len(self.blocks_seq) == len(self.planes_seq)
 
-        self.block0 = ConvBnActPool(
+        self.block0 = ConvBnActPool( # Simple CONV-BN-ACT-POOL layer
             in_channels=3,
             out_channels=self.planes,
             kernel_size=5,
@@ -31,7 +32,7 @@ class RepVGG_CIFAR(nn.Module):
             act=act,
             pool=kwargs.get('in_pool', True)
         )
-        for i in range(len(self.planes_seq)):
+        for i in range(len(self.planes_seq)): # Creating RepVGG blocks
             self.add_module('block%d' % (i+1), self._make_block(
                 planes=self.planes_seq[i],
                 num_blocks=self.blocks_seq[i]
@@ -44,7 +45,7 @@ class RepVGG_CIFAR(nn.Module):
             nn.Linear(self.planes_seq[-1], num_classes)
         )
     
-    def _make_block(self, planes, num_blocks):
+    def _make_block(self, planes, num_blocks): # Separate repVGG block creation
         assert (planes > 0) and (num_blocks > 0)
         blocks = []
         for i in range(num_blocks):
@@ -58,7 +59,7 @@ class RepVGG_CIFAR(nn.Module):
             self.planes = planes
         return nn.Sequential(*blocks)
 
-    def forward(self, x):
+    def forward(self, x): # Forward inference
         out = self.block0(x)
         for i in range(len(self.planes_seq)):
             out = self.__getattr__('block%d' % (i+1))(out)
@@ -98,14 +99,14 @@ class HMDNet(nn.Module):
         return x
         # return F.log_softmax(x, dim=1)
 
-def get_model(model_name, model_config):
+def get_model(model_name, model_config): # Return model based on name and config
     avail_models = {
         'hmd': HMDNet,
         'repvgg_cifar': RepVGG_CIFAR
     }
     return avail_models[model_name](**model_config)
 
-if __name__ == '__main__':
+if __name__ == '__main__': # Default if called from model main
     test_model = get_model(
         model_name='repvgg_cifar',
         model_config={
