@@ -89,13 +89,15 @@ class Trainer():
         if self.config['dump_summary']:
             self.writer = SummaryWriter(self.path)
 
-    def init_seed(self, seed): # Initialize seed
+    # Initialize seed
+    def init_seed(self, seed):
         random.seed(seed)
         np.random.seed(seed)
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
 
-    def train_one_epoch(self, epoch): # Each epoch
+    # Each epoch
+    def train_one_epoch(self, epoch):
         self.model.train()
         self.curr_epoch = epoch
         for batch_idx, (data, target) in enumerate(self.train_loader):
@@ -114,7 +116,8 @@ class Trainer():
                 ))
         self.check_accuracy()
 
-    def eval(self, data_loader): # Evaluate current epoch
+    # Evaluate current epoch
+    def eval(self, data_loader):
         self.model.eval()
         loss, correct = 0, 0
         for data, target in data_loader:
@@ -128,7 +131,8 @@ class Trainer():
         loss /= len(data_loader.dataset)
         return accuracy, loss
     
-    def check_accuracy(self): # Print each epoch accuracy
+    # Print each epoch accuracy
+    def check_accuracy(self):
         train_acc, train_loss = self.eval(self.train_loader)
         val_acc, val_loss = self.eval(self.val_loader)
         print('Train Accuracy: %.2f%s\tTrain Loss: %.6f' % (train_acc, '%', train_loss))
@@ -143,13 +147,15 @@ class Trainer():
             self.writer.add_scalar('accuracy/val', val_acc, self.curr_epoch)
             self.writer.add_scalar('loss/val', val_loss, self.curr_epoch)
     
-    def export_weights(self, accuracy): # Save weights
+    # Save weights
+    def export_weights(self, accuracy):
         curr_info = '%02d_%.2f' % (self.curr_epoch, accuracy)
         weight_path = os.path.join(self.path, 'weights_%s.pth' % curr_info)
         torch.save(self.model.state_dict(), weight_path)
         print('[Weights]: [%s] state dict exported.' % (curr_info))
 
-    def train(self): # Training on all epoches
+    # Training on all epoches
+    def train(self):
         for epoch in range(1, self.config['epochs']+1):
             print('\n============ train epoch [%2d/%2d] =================' % (epoch, self.config['epochs']))
             self.train_one_epoch(epoch)
@@ -158,10 +164,10 @@ class Trainer():
         print('\n[Time]: %d mins\n[Best Pred]: %.2f%s' % (runtime, self.best_pred, '%'))
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2: # More than 1 parameter
+    if len(sys.argv) > 2:               # More than 1 parameter
         print('testing mode...')
         CONFIG['use_cuda'] = False
         CONFIG['batch_size'] = 2
     print(sys.argv)
-    trainer = Trainer(config=CONFIG) # Initialize trainer
-    trainer.train() # Start training
+    trainer = Trainer(config=CONFIG)    # Initialize trainer
+    trainer.train()                     # Start training

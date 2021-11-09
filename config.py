@@ -50,7 +50,7 @@ ACT_DICT = {
 def get_config(info):
     config = deepcopy(TEMPLATE)
     if len(info.split('_')) == 2:
-        data, setting = tuple(info.split('_'))
+        date, setting = tuple(info.split('_'))
     else:
         date, setting, dataset = tuple(info.split('_'))
         if dataset == '100':
@@ -102,14 +102,15 @@ def get_config(info):
         '6': {'blocks_seq': [1, 3, 4, 4], 'planes_seq': [64, 128, 256, 512]},
     }
 
-    config['optim'] = get_optim_dict(setting[:2]) # optimizer and lr
-    config['epochs'] = EPOCH_NUM_DICT[setting[2]] # number of epochs
-    config['model_config']['act'] = ACT_DICT[setting[3]] # activation function
-    config['model_config'].update(seq_dict[setting[4]]) # repvgg blocks and width
-    config['model_config'].update(ATT_DICT[setting[5]]) # attention module
+    config['optim'] = get_optim_dict(setting[:2])           # optimizer and lr
+    config['epochs'] = EPOCH_NUM_DICT[setting[2]]           # number of epochs
+    config['model_config']['act'] = ACT_DICT[setting[3]]    # activation function
+    config['model_config'].update(seq_dict[setting[4]])     # repvgg blocks and width
+    config['model_config'].update(ATT_DICT[setting[5]])     # attention module
     return config
 
-def get_optim_dict(info): # first letter in arg after '_' indicates optimizer, second is lr
+# two-letter str: first optimizer, second lr
+def get_optim_dict(info):
     assert len(info) == 2
     lr_dict = {
         'a': 0.001, 'b': 0.003, 'c': 0.005, 'd': 0.007,
