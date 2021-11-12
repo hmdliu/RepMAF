@@ -1,4 +1,6 @@
 
+import numpy as np
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -60,6 +62,8 @@ class RepVGG_Module(nn.Module):
             'idt': IDT_Block,
             'simam': SimAM_Block
         }
+        self.deploy = False
+        self.in_channels = in_channels
         self.br_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
         self.br_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
         self.br_idt = nn.BatchNorm2d(out_channels) if in_channels == out_channels else None
@@ -67,7 +71,76 @@ class RepVGG_Module(nn.Module):
         self.act = act_dict[act]()
         print('=> RepVGG Block: in_ch=%3d, out_ch=%3d, act=%s' % (in_channels, out_channels, act))
     
+    def get_equivalent_kernel_bias(self):
+        ker_3x3, bias_3x3 = self._fuse_bn_tensor(self.br_3x3)
+        ker_1x1, bias_1x1 = self._fuse_bn_tensor(self.br_1x1)
+        ker_idt, bias_idt = self._fuse_bn_tensor(self.br_idt)
+        rep_ker = ker_3x3 + self._pad_1x1_to_3x3(ker_1x1) + ker_idt
+        rep_bias = bias_3x3 + bias_1x1 + bias_idt
+        return rep_ker, rep_bias
+
+    def _pad_1x1_to_3x3(self, ker_1x1):
+        return F.pad(ker_1x1, [1, 1, 1, 1]) if ker_1x1 is not None else 0
+
+    # convert bn to conv params
+    def _fuse_bn_tensor(self, branch):
+        if branch is None:
+            return 0, 0
+        if isinstance(branch, nn.Sequential):
+            kernel = branch.conv.weight
+            running_mean = branch.bn.running_mean
+            running_var = branch.bn.running_var
+            gamma = branch.bn.weight
+            beta = branch.bn.bias
+            eps = branch.bn.eps
+        else:
+            # assume conv groups = 1
+            assert isinstance(branch, nn.BatchNorm2d)
+            if not hasattr(self, 'id_tensor'):
+                kernel_value = np.zeros((self.in_channels, self.in_channels, 3, 3), dtype=np.float32)
+                for i in range(self.in_channels):
+                    kernel_value[i, i % self.in_channels, 1, 1] = 1
+                self.id_tensor = torch.from_numpy(kernel_value).to(branch.weight.device)
+            kernel = self.id_tensor
+            running_mean = branch.running_mean
+            running_var = branch.running_var
+            gamma = branch.weight
+            beta = branch.bias
+            eps = branch.eps
+        std = (running_var + eps).sqrt()
+        t = (gamma / std).reshape(-1, 1, 1, 1)
+        return kernel * t, beta - running_mean * gamma / std
+
+    # convert to testing architecture
+    def switch_to_deploy(self):
+        if self.deploy:
+            return
+        self.br_rep = nn.Conv2d(
+            in_channels=self.br_3x3.conv.in_channels,
+            out_channels=self.br_3x3.conv.out_channels,
+            kernel_size=self.br_3x3.conv.kernel_size,
+            stride=self.br_3x3.conv.stride,
+            padding=self.br_3x3.conv.padding,
+            dilation=self.br_3x3.conv.dilation,
+            groups=self.br_3x3.conv.groups,
+            bias=True
+        )
+        kernel, bias = self.get_equivalent_kernel_bias()
+        self.br_rep.weight.data = kernel
+        self.br_rep.bias.data = bias
+        for p in self.parameters():
+            p.detach_()
+        self.__delattr__('br_3x3')
+        self.__delattr__('br_1x1')
+        if hasattr(self, 'br_idt'):
+            self.__delattr__('br_idt')
+        if hasattr(self, 'id_tensor'):
+            self.__delattr__('id_tensor')
+        self.deploy = True
+
     def forward(self, x):
+        if self.deploy:
+            return self.act(self.att(self.br_rep(x)))
         x = self.br_3x3(x) + self.br_1x1(x) + (self.br_idt(x) if self.br_idt is not None else 0)
         return self.act(self.att(x))
 
@@ -139,4 +212,28 @@ class SimAM_Block(torch.nn.Module):
         n = w * h - 1
         x_minus_mu_square = (x - x.mean(dim=[2,3], keepdim=True)).pow(2)
         y = x_minus_mu_square / (4 * (x_minus_mu_square.sum(dim=[2,3], keepdim=True) / n + self.lamb)) + 0.5
-        return x * self.act(y)        
+        return x * self.act(y)
+
+def test_repvgg_deploy():
+
+    # init module & input
+    x = torch.randn(2, 3, 4, 4)
+    m = RepVGG_Module(3, 3)
+    m.eval()  
+
+    # pred with training architecture
+    a = m(x)
+
+    # switch to testing architecture
+    m.switch_to_deploy()
+
+    # pred with testing architecture
+    b = m(x)
+
+    # check equivalence
+    print('[pred 1]:', torch.sum(a))
+    print('[pred 2]:', torch.sum(b))
+    print('[pred diff]:', torch.sum(a) - torch.sum(b))
+
+if __name__ == '__main__':
+    test_repvgg_deploy()
