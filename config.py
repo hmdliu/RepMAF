@@ -23,7 +23,7 @@ TEMPLATE = {
         'lr': 0.001,
     },
     'dump_summary': True,
-    'export_bound': 88
+    'export_bound': 100
 }
 
 EPOCH_NUM_DICT = {
