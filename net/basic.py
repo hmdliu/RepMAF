@@ -69,7 +69,7 @@ class RepVGG_Module(nn.Module):
         self.br_idt = nn.BatchNorm2d(out_channels) if in_channels == out_channels else None
         self.att = att_dict[att](out_channels, **att_kwargs)
         self.act = act_dict[act]()
-        print('=> RepVGG Block: in_ch=%3d, out_ch=%3d, act=%s' % (in_channels, out_channels, act))
+        print('  => RepVGG Block: in_ch=%s, out_ch=%s, act=%s' % (in_channels, out_channels, act))
     
     def get_equivalent_kernel_bias(self):
         ker_3x3, bias_3x3 = self._fuse_bn_tensor(self.br_3x3)
@@ -143,6 +143,44 @@ class RepVGG_Module(nn.Module):
             return self.act(self.att(self.br_rep(x)))
         x = self.br_3x3(x) + self.br_1x1(x) + (self.br_idt(x) if self.br_idt is not None else 0)
         return self.act(self.att(x))
+
+class RepTree_Module(nn.Module):
+    def __init__(self, in_channels, out_channels, branch=2, repvgg_kwargs={}):
+        super().__init__()
+
+        self.branch = branch
+        self.inter_channels = branch * out_channels
+        print('=> RepTree Block: branch=%s, inter_ch=%s' % (branch, self.inter_channels))
+
+        for i in range(1, branch+1):
+            self.add_module('br%d' % i, RepVGG_Module(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                **repvgg_kwargs
+            ))
+        self.merge = nn.Sequential(
+            nn.BatchNorm2d(self.inter_channels),
+            nn.Conv2d(
+                in_channels=self.inter_channels,
+                out_channels=out_channels,
+                kernel_size=1,
+                groups=out_channels,
+                bias=False
+            ) if branch > 1 else nn.Identity(),
+            # nn.BatchNorm2d(out_channels),
+        )
+
+    def forward(self, x):
+        b, _, h, w = x.size()
+        feats = []
+        for i in range(1, self.branch+1):
+            feats.append(self.__getattr__('br%d' % i)(x))
+        if self.branch > 1:
+            feats = torch.cat(tuple(feats), dim=-2).view(b, self.inter_channels, h, w)
+            # feats = torch.cat(tuple(feats), dim=1)
+        else:
+            feats = feats[0]
+        return self.merge(feats)
 
 class IRB_Block(nn.Module):
     def __init__(self, in_feats, out_feats, pool=True, expand_ratio=6):

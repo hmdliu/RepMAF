@@ -71,63 +71,44 @@ class RepVGG_CIFAR(nn.Module):
         # return F.log_softmax(self.fc(out), dim=1)
 
 # Simple Version
-class RepVGG_Simple(nn.Module):
-    def __init__(self, num_classes=10):
+class RepVGG_Simple(nn.Sequential):
+    def __init__(self, in_channels=64, out_channels=512, num_classes=10):
         super().__init__()
-
-        self.block0 = ConvBnActPool(
+        self.add_module('block0', ConvBnActPool(
             in_channels=3,
-            out_channels=64,
+            out_channels=in_channels,
             kernel_size=5,
             padding=2,
             act='relu',
             pool=True
-        )
-        self.block1 = RepVGG_Module(64, 512)
-        
-        self.fc = nn.Sequential(
+        ))
+        self.add_module('block1', RepVGG_Module(in_channels, out_channels))
+        self.add_module('fc', nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Dropout(p=0.5),
             nn.Flatten(),
-            nn.Linear(512, num_classes)
-        )
-
-    def forward(self, x):
-        out = self.block0(x)
-        out = self.block1(out)
-        return self.fc(out)
+            nn.Linear(out_channels, num_classes)
+        ))
 
 # ConvBn Version
-class RepVGG_Tree(nn.Module):
-    def __init__(self, num_classes=10):
+class RepVGG_Tree(nn.Sequential):
+    def __init__(self, in_channels=64, out_channels=256, branch=2, num_classes=10):
         super().__init__()
-
-        self.block0 = ConvBnActPool(
+        self.add_module('block0', ConvBnActPool(
             in_channels=3,
-            out_channels=64,
+            out_channels=in_channels,
             kernel_size=5,
             padding=2,
             act='relu',
             pool=True
-        )
-        self.block1a = RepVGG_Module(64, 256)
-        self.block1b = RepVGG_Module(64, 256)
-        
-        self.fc = nn.Sequential(
-            nn.Conv2d(512, 256, kernel_size=1, groups=256, bias=False),
-            nn.BatchNorm2d(256),
+        ))
+        self.add_module('block1', RepTree_Module(in_channels, out_channels, branch))
+        self.add_module('fc', nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Dropout(p=0.5),
             nn.Flatten(),
-            nn.Linear(256, num_classes)
-        )
-
-    def forward(self, x):
-        x = self.block0(x)
-        p, q = self.block1a(x), self.block1b(x)
-        b, c, h, w = p.size()
-        x = torch.cat((p, q), dim=-2).reshape(b, 2*c, h, w)    
-        return self.fc(x)
+            nn.Linear(out_channels, num_classes)
+        ))
 
 # Test Version
 class HMDNet(nn.Module):
