@@ -70,6 +70,65 @@ class RepVGG_CIFAR(nn.Module):
         return self.fc(out)
         # return F.log_softmax(self.fc(out), dim=1)
 
+# Simple Version
+class RepVGG_Simple(nn.Module):
+    def __init__(self, num_classes=10):
+        super().__init__()
+
+        self.block0 = ConvBnActPool(
+            in_channels=3,
+            out_channels=64,
+            kernel_size=5,
+            padding=2,
+            act='relu',
+            pool=True
+        )
+        self.block1 = RepVGG_Module(64, 512)
+        
+        self.fc = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Dropout(p=0.5),
+            nn.Flatten(),
+            nn.Linear(512, num_classes)
+        )
+
+    def forward(self, x):
+        out = self.block0(x)
+        out = self.block1(out)
+        return self.fc(out)
+
+# ConvBn Version
+class RepVGG_Tree(nn.Module):
+    def __init__(self, num_classes=10):
+        super().__init__()
+
+        self.block0 = ConvBnActPool(
+            in_channels=3,
+            out_channels=64,
+            kernel_size=5,
+            padding=2,
+            act='relu',
+            pool=True
+        )
+        self.block1a = RepVGG_Module(64, 256)
+        self.block1b = RepVGG_Module(64, 256)
+        
+        self.fc = nn.Sequential(
+            nn.Conv2d(512, 256, kernel_size=1, groups=256, bias=False),
+            nn.BatchNorm2d(256),
+            nn.AdaptiveAvgPool2d(1),
+            nn.Dropout(p=0.5),
+            nn.Flatten(),
+            nn.Linear(256, num_classes)
+        )
+
+    def forward(self, x):
+        x = self.block0(x)
+        p, q = self.block1a(x), self.block1b(x)
+        b, c, h, w = p.size()
+        x = torch.cat((p, q), dim=-2).reshape(b, 2*c, h, w)    
+        return self.fc(x)
+
 # Test Version
 class HMDNet(nn.Module):
     def __init__(self, num_classes=10):
@@ -106,7 +165,9 @@ class HMDNet(nn.Module):
 def get_model(model_name, model_config): # Return model based on name and config
     avail_models = {
         'hmd': HMDNet,
-        'repvgg_cifar': RepVGG_CIFAR
+        'repvgg_cifar': RepVGG_CIFAR,
+        'simple': RepVGG_Simple,
+        'tree': RepVGG_Tree,
     }
     return avail_models[model_name](**model_config)
 
