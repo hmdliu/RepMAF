@@ -145,12 +145,14 @@ class RepVGG_Module(nn.Module):
         return self.act(self.att(x))
 
 class RepTree_Module(nn.Module):
-    def __init__(self, in_channels, out_channels, branch=2, repvgg_kwargs={}):
+    def __init__(self, in_channels, out_channels, branch=2, shuffle=True, repvgg_kwargs={}):
         super().__init__()
 
         self.branch = branch
+        self.shuffle = shuffle
         self.inter_channels = branch * out_channels
-        print('=> RepTree Block: branch=%s, inter_ch=%s' % (branch, self.inter_channels))
+        print('=> RepTree Block: branch=%s, inter_ch=%s, shuffle=%s' %
+                (branch, self.inter_channels, shuffle))
 
         for i in range(1, branch+1):
             self.add_module('br%d' % i, RepVGG_Module(
@@ -175,12 +177,8 @@ class RepTree_Module(nn.Module):
         feats = []
         for i in range(1, self.branch+1):
             feats.append(self.__getattr__('br%d' % i)(x))
-        if self.branch > 1:
-            feats = torch.cat(tuple(feats), dim=-2).view(b, self.inter_channels, h, w)
-            # feats = torch.cat(tuple(feats), dim=1)
-        else:
-            feats = feats[0]
-        return self.merge(feats)
+        feats = torch.cat(tuple(feats), dim=(2 if self.shuffle else 1))
+        return self.merge(feats.view(b, self.inter_channels, h, w))
 
 class IRB_Block(nn.Module):
     def __init__(self, in_feats, out_feats, pool=True, expand_ratio=6):
@@ -273,5 +271,15 @@ def test_repvgg_deploy():
     print('[pred 2]:', torch.sum(b))
     print('[pred diff]:', torch.sum(a) - torch.sum(b))
 
+def test_reptree_deploy():
+    x = torch.randn(2, 3, 4, 4)
+    m = RepTree_Module(3, 5, branch=2)
+    m.eval() 
+
+    print(m)
+    for k, v in m.state_dict().items():
+        print(k, v.size())
+
 if __name__ == '__main__':
-    test_repvgg_deploy()
+    # test_repvgg_deploy()
+    test_reptree_deploy()

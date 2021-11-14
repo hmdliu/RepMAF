@@ -70,7 +70,61 @@ class RepVGG_CIFAR(nn.Module):
         return self.fc(out)
         # return F.log_softmax(self.fc(out), dim=1)
 
-# Simple Version
+# RepTree CIFAR module
+class RepTree_CIFAR(nn.Module):
+    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512],
+                    repvgg_kwargs={}, branch=2, shuffle=True, num_classes=10, **kwargs):
+        super().__init__()
+
+        self.branch = branch
+        self.shuffle = shuffle
+        self.blocks_seq = blocks_seq
+        self.planes_seq = planes_seq
+        self.planes = planes_seq[0]
+        self.repvgg_kwargs = repvgg_kwargs
+        assert len(self.blocks_seq) == len(self.planes_seq)
+
+        self.block0 = ConvBnActPool(
+            in_channels=3,
+            out_channels=self.planes,
+            kernel_size=5,
+            padding=2,
+            act=repvgg_kwargs.get('act', 'relu'),
+            pool=kwargs.get('in_pool', True)
+        )
+        for i in range(len(self.planes_seq)):
+            self.add_module('block%d' % (i+1), self._make_block(
+                planes=self.planes_seq[i],
+                num_blocks=self.blocks_seq[i]
+            ))
+        
+        self.fc = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Dropout(p=0.5),
+            nn.Flatten(),
+            nn.Linear(self.planes_seq[-1], num_classes)
+        )
+    
+    def _make_block(self, planes, num_blocks):
+        assert (planes > 0) and (num_blocks > 0)
+        blocks = []
+        for i in range(num_blocks):
+            blocks.append(RepTree_Module(
+                in_channels=self.planes,
+                out_channels=planes,
+                branch=self.branch,
+                shuffle=self.shuffle,
+                repvgg_kwargs=self.repvgg_kwargs
+            ))
+            self.planes = planes
+        return nn.Sequential(*blocks)
+
+    def forward(self, x):
+        out = self.block0(x)
+        for i in range(len(self.planes_seq)):
+            out = self.__getattr__('block%d' % (i+1))(out)
+        return self.fc(out)
+
 class RepVGG_Simple(nn.Sequential):
     def __init__(self, in_channels=64, out_channels=512, num_classes=10):
         super().__init__()
@@ -90,7 +144,6 @@ class RepVGG_Simple(nn.Sequential):
             nn.Linear(out_channels, num_classes)
         ))
 
-# ConvBn Version
 class RepVGG_Tree(nn.Sequential):
     def __init__(self, in_channels=64, out_channels=256, branch=2, num_classes=10):
         super().__init__()
@@ -147,6 +200,7 @@ def get_model(model_name, model_config): # Return model based on name and config
     avail_models = {
         'hmd': HMDNet,
         'repvgg_cifar': RepVGG_CIFAR,
+        'reptree_cifar': RepTree_CIFAR,
         'simple': RepVGG_Simple,
         'tree': RepVGG_Tree,
     }
