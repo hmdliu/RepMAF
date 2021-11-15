@@ -38,7 +38,10 @@ class Trainer():
         print('[Config]: %s\n' % self.config)
 
         # init dataloader
-        trainset, valset = get_dataset(self.config['dataset'])
+        trainset, valset = get_dataset(
+            dataset=self.config['dataset'],
+            aug=self.config['aug']
+        )
         self.train_loader = DataLoader(
             dataset=trainset,
             batch_size=self.config['batch_size'], 
