@@ -71,7 +71,8 @@ class Trainer():
             self.optimizer = optim.SGD(
                 params=self.model.parameters(),
                 lr=self.config['optim']['lr'],
-                momentum=self.config['optim']['momentum']
+                momentum=self.config['optim']['momentum'],
+                weight_decay=self.config['optim']['weight_decay']
             )
         elif self.config['optim']['method'] == 'adam':
             self.optimizer = optim.Adam(

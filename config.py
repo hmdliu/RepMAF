@@ -3,7 +3,7 @@ from copy import deepcopy
 
 TEMPLATE = {
     'seed': 0,
-    'aug': False,
+    'aug': True,
     'model': 'repvgg_cifar',
     'model_config': {
         'act': 'relu',
@@ -19,8 +19,10 @@ TEMPLATE = {
     'epochs': 30,
     'poly': 0.9,
     'optim': {
-        'method': 'adam',
-        'lr': 0.001,
+        'method': 'sgd',
+        'lr': 0.1,
+        'momentum': 0.9,
+        'weight_decay': 5e-4,
     },
     'dump_summary': True,
     'export_bound': 100
