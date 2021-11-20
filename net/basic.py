@@ -1,4 +1,5 @@
 
+import random
 import numpy as np
 
 import torch
@@ -145,14 +146,18 @@ class RepVGG_Module(nn.Module):
         return self.act(self.att(x))
 
 class RepTree_Module(nn.Module):
-    def __init__(self, in_channels, out_channels, branch=2, shuffle=True, repvgg_kwargs={}):
+    def __init__(self, in_channels, out_channels, branch=2, shuffle=True, 
+                    branch_dropout=0, repvgg_kwargs={}, device='cuda:0'):
         super().__init__()
 
+        self.device = device
         self.branch = branch
         self.shuffle = shuffle
+        self.out_channels = out_channels
+        self.branch_dropout = branch_dropout
         self.inter_channels = branch * out_channels
-        print('=> RepTree Block: branch=%s, inter_ch=%s, shuffle=%s' %
-                (branch, self.inter_channels, shuffle))
+        print('=> RepTree Block: branch=%s, inter_ch=%s, shuffle=%s, dropout=%.2f' %
+                (branch, self.inter_channels, shuffle, branch_dropout))
 
         for i in range(1, branch+1):
             self.add_module('br%d' % i, RepVGG_Module(
@@ -174,9 +179,22 @@ class RepTree_Module(nn.Module):
 
     def forward(self, x):
         b, _, h, w = x.size()
-        feats = []
+        feats, count = [], 0
         for i in range(1, self.branch+1):
-            feats.append(self.__getattr__('br%d' % i)(x))
+            # forward branches randomly while training
+            if (random.random() > self.branch_dropout) or (not self.training):
+                feats.append(self.__getattr__('br%d' % i)(x))
+                count += 1
+            # forward at least one branch
+            elif (i == self.branch) and (count == 0):
+                feats.append(self.__getattr__('br%d' % i)(x))
+            # dropout some branches as needed
+            else:
+                feats.append(torch.zeros(
+                    size=(b, self.out_channels, h, w),
+                    requires_grad=False,
+                    device=self.device,
+                ))
         feats = torch.cat(tuple(feats), dim=(2 if self.shuffle else 1))
         return self.merge(feats.view(b, self.inter_channels, h, w))
 

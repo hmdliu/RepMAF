@@ -72,16 +72,18 @@ class RepVGG_CIFAR(nn.Module):
 
 # RepTree CIFAR module
 class RepTree_CIFAR(nn.Module):
-    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512],
-                    repvgg_kwargs={}, branch=2, shuffle=True, num_classes=10, **kwargs):
+    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], repvgg_kwargs={},
+                    branch=2, branch_dropout=0, shuffle=True, num_classes=10, device='cuda:0', **kwargs):
         super().__init__()
 
+        self.device = device
         self.branch = branch
         self.shuffle = shuffle
         self.blocks_seq = blocks_seq
         self.planes_seq = planes_seq
         self.planes = planes_seq[0]
         self.repvgg_kwargs = repvgg_kwargs
+        self.branch_dropout = branch_dropout
         assert len(self.blocks_seq) == len(self.planes_seq)
 
         self.block0 = ConvBnActPool(
@@ -114,7 +116,9 @@ class RepTree_CIFAR(nn.Module):
                 out_channels=planes,
                 branch=self.branch,
                 shuffle=self.shuffle,
-                repvgg_kwargs=self.repvgg_kwargs
+                branch_dropout=self.branch_dropout,
+                repvgg_kwargs=self.repvgg_kwargs,
+                device=self.device
             ))
             self.planes = planes
         return nn.Sequential(*blocks)
