@@ -6,9 +6,11 @@ import torch.nn.functional as F
 try:
     # calling from train
     from net.basic import *
+    from net.utils import get_fwd_branch
 except:
     # calling from __main__
     from basic import *
+    from utils import get_fwd_branch
 
 # RepVGG CIFAR module
 class RepVGG_CIFAR(nn.Module):
@@ -121,12 +123,13 @@ class RepTree_CIFAR(nn.Module):
                 device=self.device
             ))
             self.planes = planes
-        return nn.Sequential(*blocks)
+        return Fwd_Seq_Block(blocks)
 
     def forward(self, x):
         out = self.block0(x)
+        fwd = get_fwd_branch(self.branch, self.branch_dropout, self.training)
         for i in range(len(self.planes_seq)):
-            out = self.__getattr__('block%d' % (i+1))(out)
+            out = self.__getattr__('block%d' % (i+1))(out, fwd)
         return self.fc(out)
 
 class RepVGG_Simple(nn.Sequential):

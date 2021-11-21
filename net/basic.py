@@ -145,6 +145,18 @@ class RepVGG_Module(nn.Module):
         x = self.br_3x3(x) + self.br_1x1(x) + (self.br_idt(x) if self.br_idt is not None else 0)
         return self.act(self.att(x))
 
+class Fwd_Seq_Block(nn.Module):
+    def __init__(self, module_list):
+        super().__init__()
+        self.module_num = len(module_list)
+        for i in range(self.module_num):
+            self.add_module('%d' % i, module_list[i])
+
+    def forward(self, x, fwd):
+        for i in range(self.module_num):
+            x = self.__getattr__('%d' % i)(x, fwd)
+        return x
+
 class RepTree_Module(nn.Module):
     def __init__(self, in_channels, out_channels, branch=2, shuffle=True, 
                     branch_dropout=0, repvgg_kwargs={}, device='cuda:0'):
@@ -176,19 +188,16 @@ class RepTree_Module(nn.Module):
             ) if branch > 1 else nn.Identity(),
             # nn.BatchNorm2d(out_channels),
         )
+        self.merge[1].weight.data.fill_(1 / self.branch)
 
-    def forward(self, x):
+    def forward(self, x, fwd=None):
         b, _, h, w = x.size()
-        feats, count = [], 0
+        feats = []
+        if fwd is None:
+            fwd = [True for i in range(self.branch)]
         for i in range(1, self.branch+1):
-            # forward branches randomly while training
-            if (random.random() > self.branch_dropout) or (not self.training):
+            if fwd[i-1]:
                 feats.append(self.__getattr__('br%d' % i)(x))
-                count += 1
-            # forward at least one branch
-            elif (i == self.branch) and (count == 0):
-                feats.append(self.__getattr__('br%d' % i)(x))
-            # dropout some branches as needed
             else:
                 feats.append(torch.zeros(
                     size=(b, self.out_channels, h, w),
