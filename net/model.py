@@ -93,7 +93,7 @@ class RepTree_CIFAR(nn.Module):
             out_channels=self.planes,
             kernel_size=5,
             padding=2,
-            act=repvgg_kwargs.get('act', 'relu'),
+            act='relu', # repvgg_kwargs.get('act', 'relu')
             pool=kwargs.get('in_pool', True)
         )
         for i in range(len(self.planes_seq)):
@@ -129,6 +129,7 @@ class RepTree_CIFAR(nn.Module):
         out = self.block0(x)
         fwd = get_fwd_branch(self.branch, self.branch_dropout, self.training)
         for i in range(len(self.planes_seq)):
+            # out = self.__getattr__('block%d' % (i+1))(out)
             out = self.__getattr__('block%d' % (i+1))(out, fwd)
         return self.fc(out)
 

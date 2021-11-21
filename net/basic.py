@@ -152,7 +152,7 @@ class Fwd_Seq_Block(nn.Module):
         for i in range(self.module_num):
             self.add_module('%d' % i, module_list[i])
 
-    def forward(self, x, fwd):
+    def forward(self, x, fwd=None):
         for i in range(self.module_num):
             x = self.__getattr__('%d' % i)(x, fwd)
         return x
@@ -177,6 +177,8 @@ class RepTree_Module(nn.Module):
                 out_channels=out_channels,
                 **repvgg_kwargs
             ))
+
+        # group conv fusion
         self.merge = nn.Sequential(
             nn.BatchNorm2d(self.inter_channels),
             nn.Conv2d(
@@ -184,15 +186,24 @@ class RepTree_Module(nn.Module):
                 out_channels=out_channels,
                 kernel_size=1,
                 groups=out_channels,
-                bias=False
+                bias=True
             ) if branch > 1 else nn.Identity(),
-            # nn.BatchNorm2d(out_channels),
+            nn.BatchNorm2d(
+                num_features=out_channels
+            ) if branch > 1 else nn.Identity(),
+            nn.ReLU(inplace=True)
         )
-        self.merge[1].weight.data.fill_(1 / self.branch)
+        if isinstance(self.merge[1], nn.Conv2d):
+            self.merge[1].weight.data.fill_(1 / self.branch)
+        
+        # # sum fusion
+        # self.act = nn.ReLU(inplace=True)
 
     def forward(self, x, fwd=None):
         b, _, h, w = x.size()
         feats = []
+
+        # branch dropout version
         if fwd is None:
             fwd = [True for i in range(self.branch)]
         for i in range(1, self.branch+1):
@@ -206,6 +217,11 @@ class RepTree_Module(nn.Module):
                 ))
         feats = torch.cat(tuple(feats), dim=(2 if self.shuffle else 1))
         return self.merge(feats.view(b, self.inter_channels, h, w))
+
+        # # all branch version
+        # for i in range(1, self.branch+1):
+        #     feats.append(self.__getattr__('br%d' % i)(x))
+        # return self.act(sum(feats))
 
 class IRB_Block(nn.Module):
     def __init__(self, in_feats, out_feats, pool=True, expand_ratio=6):
