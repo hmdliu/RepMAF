@@ -145,6 +145,64 @@ class RepVGG_Module(nn.Module):
         x = self.br_3x3(x) + self.br_1x1(x) + (self.br_idt(x) if self.br_idt is not None else 0)
         return self.act(self.att(x))
 
+class DBB_Module(nn.Module):
+    def __init__(self, in_channels, out_channels, merge='add', idt_flag=True, act='relu'):
+        super().__init__()
+        act_dict = {
+            'idt': nn.Identity,
+            'gelu': nn.GELU,
+            'relu': nn.ReLU,
+            'silu': nn.SiLU,
+            'tanh': nn.Tanh,
+            'hardswish': nn.Hardswish,
+        }
+        self.branch_num = 4
+        self.in_channels = in_channels
+        self.br1 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
+        self.br2 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
+        self.br3 = nn.Sequential(
+            ConvBn(in_channels, in_channels, kernel_size=1, padding=0),
+            nn.ZeroPad2d(padding=1),
+            ConvBn(in_channels, out_channels, kernel_size=3, padding=0)
+        )
+        self.br4 = nn.Sequential(
+            ConvBn(in_channels, out_channels, kernel_size=1, padding=0),
+            nn.ZeroPad2d(padding=1),
+            nn.AvgPool2d(kernel_size=3, stride=1, padding=0),
+            nn.BatchNorm2d(out_channels)
+        )
+        if idt_flag and (in_channels == out_channels):
+            self.br5 = nn.BatchNorm2d(out_channels)
+            self.branch_num += 1
+        if merge == 'group':
+            self.inter_channels = self.branch_num * out_channels
+            self.merge = nn.Sequential(
+                nn.BatchNorm2d(self.inter_channels),
+                nn.Conv2d(
+                    in_channels=self.inter_channels,
+                    out_channels=out_channels,
+                    kernel_size=1,
+                    groups=out_channels,
+                    bias=True
+                ),
+                act_dict[act]()
+            )
+        else:
+            self.act = act_dict[act]()
+        print('=> DBB Block: in_ch=%s, out_ch=%s, act=%s, merge=%s' % \
+                (in_channels, out_channels, act, merge))
+
+    def forward(self, x):
+        b, _, h, w = x.size()
+        feats = []
+        for i in range(1, self.branch_num+1):
+            feats.append(self.__getattr__('br%d' % i)(x))
+        if hasattr(self, 'merge'):
+            feats = torch.cat(tuple(feats), dim=2)
+            return self.merge(feats.view(b, self.inter_channels, h, w))
+        else:
+            return self.act(sum(feats))
+
 class Fwd_Seq_Block(nn.Module):
     def __init__(self, module_list):
         super().__init__()

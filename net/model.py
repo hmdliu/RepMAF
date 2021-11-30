@@ -133,6 +133,65 @@ class RepTree_CIFAR(nn.Module):
             out = self.__getattr__('block%d' % (i+1))(out, fwd)
         return self.fc(out)
 
+# RepDBB CIFAR module
+class RepDBB_CIFAR(nn.Module):
+    def __init__(self, act='relu', merge='add', idt_flag=True, num_classes=10,
+                    blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], **kwargs):
+        super().__init__()
+
+        self.act = act
+        self.merge = merge
+        self.idt_flag = idt_flag
+        self.blocks_seq = blocks_seq
+        self.planes_seq = planes_seq
+        self.planes = planes_seq[0]
+        assert len(self.blocks_seq) == len(self.planes_seq)
+
+        # Simple CONV-BN-ACT-POOL layer
+        self.block0 = ConvBnActPool(
+            in_channels=3,
+            out_channels=self.planes,
+            kernel_size=5,
+            padding=2,
+            act=act,
+            pool=kwargs.get('in_pool', True)
+        )
+        # Creating RepDBB blocks
+        for i in range(len(self.planes_seq)):
+            self.add_module('block%d' % (i+1), self._make_block(
+                planes=self.planes_seq[i],
+                num_blocks=self.blocks_seq[i]
+            ))
+        
+        self.fc = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Dropout(p=0.5),
+            nn.Flatten(),
+            nn.Linear(self.planes_seq[-1], num_classes)
+        )
+    
+    # Separate RepDBB block creation
+    def _make_block(self, planes, num_blocks):
+        assert (planes > 0) and (num_blocks > 0)
+        blocks = []
+        for i in range(num_blocks):
+            blocks.append(DBB_Module(
+                in_channels=self.planes,
+                out_channels=planes,
+                merge=self.merge,
+                idt_flag=self.idt_flag,
+                act=self.act
+            ))
+            self.planes = planes
+        return nn.Sequential(*blocks)
+
+    # Forward inference
+    def forward(self, x):
+        out = self.block0(x)
+        for i in range(len(self.planes_seq)):
+            out = self.__getattr__('block%d' % (i+1))(out)
+        return self.fc(out)
+
 class RepVGG_Simple(nn.Sequential):
     def __init__(self, in_channels=64, out_channels=512, num_classes=10):
         super().__init__()
@@ -207,6 +266,7 @@ class HMDNet(nn.Module):
 def get_model(model_name, model_config): # Return model based on name and config
     avail_models = {
         'hmd': HMDNet,
+        'repdbb_cifar': RepDBB_CIFAR,
         'repvgg_cifar': RepVGG_CIFAR,
         'reptree_cifar': RepTree_CIFAR,
         'simple': RepVGG_Simple,
