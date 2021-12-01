@@ -177,16 +177,19 @@ class DBB_Module(nn.Module):
         if merge == 'group':
             self.inter_channels = self.branch_num * out_channels
             self.merge = nn.Sequential(
-                nn.BatchNorm2d(self.inter_channels),
+                # nn.BatchNorm2d(self.inter_channels),
                 nn.Conv2d(
                     in_channels=self.inter_channels,
                     out_channels=out_channels,
                     kernel_size=1,
                     groups=out_channels,
-                    bias=True
+                    bias=False
                 ),
+                # nn.BatchNorm2d(out_channels),
                 act_dict[act]()
             )
+            # self.merge[1].weight.data.fill_(1 / self.branch_num)
+            self.merge[0].weight.data.fill_(1 / self.branch_num)
         else:
             self.act = act_dict[act]()
         print('=> DBB Block: in_ch=%s, out_ch=%s, act=%s, merge=%s' % \
@@ -202,6 +205,43 @@ class DBB_Module(nn.Module):
             return self.merge(feats.view(b, self.inter_channels, h, w))
         else:
             return self.act(sum(feats))
+
+class RepMSS_Module(nn.Module):
+    def __init__(self, in_channels, out_channels, act='relu'):
+        super().__init__()
+        act_dict = {
+            'idt': nn.Identity,
+            'gelu': nn.GELU,
+            'relu': nn.ReLU,
+            'silu': nn.SiLU,
+            'tanh': nn.Tanh,
+            'hardswish': nn.Hardswish,
+        }
+        self.in_channels = in_channels
+        self.idt_flag = (in_channels == out_channels)
+        if self.idt_flag:
+            self.br1_idt = nn.BatchNorm2d(out_channels)
+            self.br2_idt = nn.BatchNorm2d(out_channels)
+        self.br1_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
+        self.br2_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
+        self.br1_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
+        self.br2_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
+        self.act = act_dict[act]()
+        print('=> RepMSS Block: in_ch=%s, out_ch=%s, act=%s, idt_flag=%s' \
+                % (in_channels, out_channels, act, self.idt_flag))
+
+    def forward(self, feats):
+        x, y = feats[:2]
+        # version 1
+        x = self.act(sum([self.br1_idt(x) if self.idt_flag else 0, self.br1_1x1(x), self.br1_3x3(x)]))
+        y = self.act(sum([self.br2_idt(y) if self.idt_flag else 0, self.br2_1x1(y), self.br2_3x3(y)]))
+        p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
+        return x+q, y+p, x, y
+        # # version 2
+        # x = sum([self.br1_idt(x) if self.idt_flag else 0, self.br1_1x1(x), self.br1_3x3(x)])
+        # y = sum([self.br2_idt(y) if self.idt_flag else 0, self.br2_1x1(y), self.br2_3x3(y)])
+        # p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
+        # return self.act(x+q), self.act(y+p), self.act(x), self.act(y)
 
 class Fwd_Seq_Block(nn.Module):
     def __init__(self, module_list):

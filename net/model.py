@@ -192,6 +192,65 @@ class RepDBB_CIFAR(nn.Module):
             out = self.__getattr__('block%d' % (i+1))(out)
         return self.fc(out)
 
+# RepMSS CIFAR module
+class RepMSS_CIFAR(nn.Module):
+    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512],
+                     act='relu', out_concat=True, num_classes=10, **kwargs):
+        super().__init__()
+
+        self.act = act
+        self.out_concat = out_concat
+        self.blocks_seq = blocks_seq
+        self.planes_seq = planes_seq
+        self.planes = planes_seq[0]
+        assert len(self.blocks_seq) == len(self.planes_seq)
+
+        # Simple CONV-BN-ACT-POOL layer
+        self.block0 = ConvBnActPool(
+            in_channels=3,
+            out_channels=self.planes,
+            kernel_size=5,
+            padding=2,
+            act=act,
+            pool=kwargs.get('in_pool', True)
+        )
+        # Creating RepMSS blocks
+        for i in range(len(self.planes_seq)):
+            self.add_module('block%d' % (i+1), self._make_block(
+                planes=self.planes_seq[i],
+                num_blocks=self.blocks_seq[i]
+            ))
+        
+        self.fc = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Dropout(p=0.5),
+            nn.Flatten(),
+            nn.Linear((out_concat + 1) * self.planes_seq[-1], num_classes)
+        )
+    
+    # Separate RepMSS block creation
+    def _make_block(self, planes, num_blocks):
+        assert (planes > 0) and (num_blocks > 0)
+        blocks = []
+        for i in range(num_blocks):
+            blocks.append(RepMSS_Module(
+                in_channels=self.planes,
+                out_channels=planes,
+                act=self.act
+            ))
+            self.planes = planes
+        return nn.Sequential(*blocks)
+
+    # Forward inference
+    def forward(self, x):
+        x1 = self.block0(x)
+        y1 = F.max_pool2d(x1, kernel_size=2)
+        for i in range(len(self.planes_seq)):
+            x1, y1, x0, y0 = self.__getattr__('block%d' % (i+1))((x1, y1))
+        if self.out_concat:
+            x0 = torch.cat((x0, F.interpolate(y0, scale_factor=2)), dim=1)
+        return self.fc(x0)
+
 class RepVGG_Simple(nn.Sequential):
     def __init__(self, in_channels=64, out_channels=512, num_classes=10):
         super().__init__()
@@ -266,6 +325,7 @@ class HMDNet(nn.Module):
 def get_model(model_name, model_config): # Return model based on name and config
     avail_models = {
         'hmd': HMDNet,
+        'repmss_cifar': RepMSS_CIFAR,
         'repdbb_cifar': RepDBB_CIFAR,
         'repvgg_cifar': RepVGG_CIFAR,
         'reptree_cifar': RepTree_CIFAR,
