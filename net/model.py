@@ -1,4 +1,5 @@
 
+from numpy.core.shape_base import block
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -194,11 +195,13 @@ class RepDBB_CIFAR(nn.Module):
 
 # RepMSS CIFAR module
 class RepMSS_CIFAR(nn.Module):
-    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512],
-                     act='relu', out_concat=True, num_classes=10, **kwargs):
+    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], act='relu', 
+                    block='vgg', version=1, out_concat=True, num_classes=10, **kwargs):
         super().__init__()
 
         self.act = act
+        self.block = block
+        self.version = version
         self.out_concat = out_concat
         self.blocks_seq = blocks_seq
         self.planes_seq = planes_seq
@@ -236,7 +239,9 @@ class RepMSS_CIFAR(nn.Module):
             blocks.append(RepMSS_Module(
                 in_channels=self.planes,
                 out_channels=planes,
-                act=self.act
+                act=self.act,
+                block=self.block,
+                version=self.version
             ))
             self.planes = planes
         return nn.Sequential(*blocks)

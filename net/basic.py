@@ -46,6 +46,22 @@ class ConvBnActPool(nn.Sequential):
         self.add_module('act', act_dict[act]())
         self.add_module('pool', nn.MaxPool2d(2) if pool else nn.Identity())
 
+def get_rep_branch(in_channels, out_channels, br_type):
+    assert br_type in ('1p3', '1pp')
+    if br_type == '1p3':
+        return nn.Sequential(
+            ConvBn(in_channels, in_channels, kernel_size=1, padding=0),
+            nn.ZeroPad2d(padding=1),
+            ConvBn(in_channels, out_channels, kernel_size=3, padding=0)
+        )
+    else:
+        return nn.Sequential(
+            ConvBn(in_channels, out_channels, kernel_size=1, padding=0),
+            nn.ZeroPad2d(padding=1),
+            nn.AvgPool2d(kernel_size=3, stride=1, padding=0),
+            nn.BatchNorm2d(out_channels)
+        )
+
 class RepVGG_Module(nn.Module):
     def __init__(self, in_channels, out_channels, act='relu', att='idt', att_kwargs={}):
         super().__init__()
@@ -207,7 +223,7 @@ class DBB_Module(nn.Module):
             return self.act(sum(feats))
 
 class RepMSS_Module(nn.Module):
-    def __init__(self, in_channels, out_channels, act='relu'):
+    def __init__(self, in_channels, out_channels, act='relu', block='vgg', version=1):
         super().__init__()
         act_dict = {
             'idt': nn.Identity,
@@ -217,6 +233,8 @@ class RepMSS_Module(nn.Module):
             'tanh': nn.Tanh,
             'hardswish': nn.Hardswish,
         }
+        self.block = block
+        self.version = version
         self.in_channels = in_channels
         self.idt_flag = (in_channels == out_channels)
         if self.idt_flag:
@@ -226,22 +244,34 @@ class RepMSS_Module(nn.Module):
         self.br2_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
         self.br1_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
         self.br2_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
+        if self.block == 'dbb':
+            self.br1_1p3 = get_rep_branch(in_channels, out_channels, br_type='1p3')
+            self.br2_1p3 = get_rep_branch(in_channels, out_channels, br_type='1p3')
+            self.br1_1pp = get_rep_branch(in_channels, out_channels, br_type='1pp')
+            self.br2_1pp = get_rep_branch(in_channels, out_channels, br_type='1pp')
         self.act = act_dict[act]()
-        print('=> RepMSS Block: in_ch=%s, out_ch=%s, act=%s, idt_flag=%s' \
-                % (in_channels, out_channels, act, self.idt_flag))
+        print('=> RepMSS Block: in_ch=%s, out_ch=%s, act=%s, block=%s' \
+                % (in_channels, out_channels, act, block))
 
     def forward(self, feats):
         x, y = feats[:2]
-        # version 1
-        x = self.act(sum([self.br1_idt(x) if self.idt_flag else 0, self.br1_1x1(x), self.br1_3x3(x)]))
-        y = self.act(sum([self.br2_idt(y) if self.idt_flag else 0, self.br2_1x1(y), self.br2_3x3(y)]))
-        p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
-        return x+q, y+p, x, y
-        # # version 2
-        # x = sum([self.br1_idt(x) if self.idt_flag else 0, self.br1_1x1(x), self.br1_3x3(x)])
-        # y = sum([self.br2_idt(y) if self.idt_flag else 0, self.br2_1x1(y), self.br2_3x3(y)])
-        # p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
-        # return self.act(x+q), self.act(y+p), self.act(x), self.act(y)
+        x_feats, y_feats = [], []
+        x_feats += [self.br1_1x1(x), self.br1_3x3(x)]
+        y_feats += [self.br2_1x1(y), self.br2_3x3(y)]
+        if self.idt_flag:
+            x_feats.append(self.br1_idt(x))
+            y_feats.append(self.br2_idt(y))
+        if self.block == 'dbb':
+            x_feats += [self.br1_1p3(x), self.br1_1pp(x)]
+            y_feats += [self.br2_1p3(y), self.br2_1pp(y)]
+        if self.version == 1:
+            x, y = self.act(sum(x_feats)), self.act(sum(y_feats))
+            p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
+            return x+q, y+p, x, y
+        else:
+            x, y = sum(x_feats), sum(y_feats)
+            p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
+            return self.act(x+q), self.act(y+p), self.act(x), self.act(y)
 
 class Fwd_Seq_Block(nn.Module):
     def __init__(self, module_list):
