@@ -46,6 +46,27 @@ class ConvBnActPool(nn.Sequential):
         self.add_module('act', act_dict[act]())
         self.add_module('pool', nn.MaxPool2d(2) if pool else nn.Identity())
 
+def get_act_func(act_type='relu', **act_kwargs):
+    act_dict = {
+        'idt': nn.Identity,
+        'gelu': nn.GELU,
+        'relu': nn.ReLU,
+        'silu': nn.SiLU,
+        'tanh': nn.Tanh,
+        'hardswish': nn.Hardswish,
+    }
+    return act_dict[act_type](**act_kwargs)
+
+def get_att_block(att_type, planes, **att_kwargs):
+    att_dict = {
+        'se': SE_Block,
+        'sem': SEM_Block,
+        'sef': SEF_Block,
+        'idt': IDT_Block,
+        'simam': SimAM_Block
+    }
+    return att_dict[att_type](planes, **att_kwargs)
+
 def get_rep_branch(in_channels, out_channels, br_type):
     assert br_type in ('1p3', '1pp')
     if br_type == '1p3':
@@ -65,27 +86,13 @@ def get_rep_branch(in_channels, out_channels, br_type):
 class RepVGG_Module(nn.Module):
     def __init__(self, in_channels, out_channels, act='relu', att='idt', att_kwargs={}):
         super().__init__()
-        act_dict = {
-            'idt': nn.Identity,
-            'gelu': nn.GELU,
-            'relu': nn.ReLU,
-            'silu': nn.SiLU,
-            'tanh': nn.Tanh,
-            'hardswish': nn.Hardswish,
-        }
-        att_dict = {
-            'se': SE_Block,
-            'sem': SEM_Block,
-            'idt': IDT_Block,
-            'simam': SimAM_Block
-        }
         self.deploy = False
         self.in_channels = in_channels
         self.br_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
         self.br_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
         self.br_idt = nn.BatchNorm2d(out_channels) if in_channels == out_channels else None
-        self.att = att_dict[att](out_channels, **att_kwargs)
-        self.act = act_dict[act]()
+        self.att = get_att_block(att, out_channels, **att_kwargs)
+        self.act = get_act_func(act)
         print('  => RepVGG Block: in_ch=%s, out_ch=%s, act=%s' % (in_channels, out_channels, act))
     
     def get_equivalent_kernel_bias(self):
@@ -164,14 +171,6 @@ class RepVGG_Module(nn.Module):
 class DBB_Module(nn.Module):
     def __init__(self, in_channels, out_channels, merge='add', idt_flag=True, act='relu'):
         super().__init__()
-        act_dict = {
-            'idt': nn.Identity,
-            'gelu': nn.GELU,
-            'relu': nn.ReLU,
-            'silu': nn.SiLU,
-            'tanh': nn.Tanh,
-            'hardswish': nn.Hardswish,
-        }
         self.branch_num = 4
         self.in_channels = in_channels
         self.br1 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
@@ -202,12 +201,12 @@ class DBB_Module(nn.Module):
                     bias=False
                 ),
                 # nn.BatchNorm2d(out_channels),
-                act_dict[act]()
+                get_act_func(act)
             )
             # self.merge[1].weight.data.fill_(1 / self.branch_num)
             self.merge[0].weight.data.fill_(1 / self.branch_num)
         else:
-            self.act = act_dict[act]()
+            self.act = get_act_func(act)
         print('=> DBB Block: in_ch=%s, out_ch=%s, act=%s, merge=%s' % \
                 (in_channels, out_channels, act, merge))
 
@@ -225,14 +224,6 @@ class DBB_Module(nn.Module):
 class RepMSS_Module(nn.Module):
     def __init__(self, in_channels, out_channels, act='relu', block='vgg', version=1):
         super().__init__()
-        act_dict = {
-            'idt': nn.Identity,
-            'gelu': nn.GELU,
-            'relu': nn.ReLU,
-            'silu': nn.SiLU,
-            'tanh': nn.Tanh,
-            'hardswish': nn.Hardswish,
-        }
         self.block = block
         self.version = version
         self.in_channels = in_channels
@@ -252,7 +243,7 @@ class RepMSS_Module(nn.Module):
             self.br2_1p3 = get_rep_branch(in_channels, out_channels, br_type='1p3')
             self.br1_1pp = get_rep_branch(in_channels, out_channels, br_type='1pp')
             self.br2_1pp = get_rep_branch(in_channels, out_channels, br_type='1pp')
-        self.act = act_dict[act]()
+        self.act = get_act_func(act)
         print('=> RepMSS Block: in_ch=%s, out_ch=%s, act=%s, block=%s' \
                 % (in_channels, out_channels, act, block))
 
@@ -291,6 +282,32 @@ class RepMSS_Module(nn.Module):
             
             # # use_lamb exp
             # return self.act(x + self.lamb1 * q), self.act(y + self.lamb2 * p), self.act(x), self.act(y)
+
+class RepMAF_Module(nn.Module):
+    def __init__(self, in_channels, out_channels, act='relu', late_fusion=True, sef_kwargs={}):
+        super().__init__()
+        self.late_fusion = late_fusion
+        self.in_channels = in_channels
+        self.idt_flag = (in_channels == out_channels)
+        if self.idt_flag:
+            self.br1_idt = nn.BatchNorm2d(out_channels)
+            self.br2_idt = nn.BatchNorm2d(out_channels)
+        self.br1_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
+        self.br2_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
+        self.br1_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
+        self.br2_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
+        self.fusion = SEF_Block(out_channels, **sef_kwargs)
+        self.act = get_act_func(act)
+        print('=> RepMAF Block: in_ch=%s, out_ch=%s, act=%s' % (in_channels, out_channels, act))
+
+    def forward(self, x):
+        y = F.max_pool2d(x, kernel_size=2)
+        x = sum([self.br1_idt(x) if self.idt_flag else 0, self.br1_1x1(x), self.br1_3x3(x)])
+        y = sum([self.br2_idt(y) if self.idt_flag else 0, self.br2_1x1(y), self.br2_3x3(y)])
+        if self.late_fusion:
+            return self.fusion(self.act(x), self.act(y))
+        else:
+            return self.act(self.fusion(x, y))
 
 class Fwd_Seq_Block(nn.Module):
     def __init__(self, module_list):
@@ -426,6 +443,28 @@ class SEM_Block(nn.Module):
     def forward(self, x):
         w = self.fc(F.adaptive_avg_pool2d(x, 1))
         return w * x
+
+class SEF_Block(nn.Module):
+    def __init__(self, in_feats, mid_feats=16):
+        super().__init__()
+        self.squeeze = nn.Sequential(
+            nn.Conv2d(in_feats, mid_feats, kernel_size=1),
+            nn.ReLU(inplace=True)
+        )
+        self.excite1 = nn.Sequential(
+            nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+            nn.Sigmoid()
+        )
+        self.excite2 = nn.Sequential(
+            nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x, y):
+        y = F.interpolate(y, scale_factor=2)
+        guide_feats = self.squeeze(F.adaptive_avg_pool2d(x+y, 1))
+        w1, w2 = self.excite1(guide_feats), self.excite2(guide_feats)
+        return w1 * x + w2 * y
 
 class SimAM_Block(torch.nn.Module):
     def __init__(self, in_feats, lamb=1e-4):
