@@ -249,11 +249,16 @@ class RepMSS_CIFAR(nn.Module):
     # Forward inference
     def forward(self, x):
         x1 = self.block0(x)
+        # # code for same-size exp
+        # x1 = F.max_pool2d(x1, kernel_size=2)
+        # y1 = x1.clone()
         y1 = F.max_pool2d(x1, kernel_size=2)
         for i in range(len(self.planes_seq)):
             x1, y1, x0, y0 = self.__getattr__('block%d' % (i+1))((x1, y1))
         if self.out_concat:
             x0 = torch.cat((x0, F.interpolate(y0, scale_factor=2)), dim=1)
+            # # code for same-size exp
+            # x0 = torch.cat((x0, y0), dim=1)
         return self.fc(x0)
 
 class RepVGG_Simple(nn.Sequential):

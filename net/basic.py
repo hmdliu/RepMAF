@@ -236,6 +236,9 @@ class RepMSS_Module(nn.Module):
         self.block = block
         self.version = version
         self.in_channels = in_channels
+        # # use_lamb exp
+        # self.lamb1 = nn.Parameter(torch.ones(1))
+        # self.lamb2 = nn.Parameter(torch.ones(1))
         self.idt_flag = (in_channels == out_channels)
         if self.idt_flag:
             self.br1_idt = nn.BatchNorm2d(out_channels)
@@ -266,12 +269,28 @@ class RepMSS_Module(nn.Module):
             y_feats += [self.br2_1p3(y), self.br2_1pp(y)]
         if self.version == 1:
             x, y = self.act(sum(x_feats)), self.act(sum(y_feats))
+
+            # # same-size exp
+            # return x+y, x+y, x, y
+
+            # default setting
             p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
             return x+q, y+p, x, y
+
+            # # use_lamb exp
+            # return x + self.lamb1 * q, y + self.lamb2 * p, x, y
         else:
             x, y = sum(x_feats), sum(y_feats)
+
+            # # same-size exp
+            # return x+y, x+y, x, y
+
+            # default setting
             p, q = F.max_pool2d(x, kernel_size=2), F.interpolate(y, scale_factor=2)
             return self.act(x+q), self.act(y+p), self.act(x), self.act(y)
+            
+            # # use_lamb exp
+            # return self.act(x + self.lamb1 * q), self.act(y + self.lamb2 * p), self.act(x), self.act(y)
 
 class Fwd_Seq_Block(nn.Module):
     def __init__(self, module_list):
