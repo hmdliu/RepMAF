@@ -263,13 +263,14 @@ class RepMSS_CIFAR(nn.Module):
 
 # RepMAF CIFAR module
 class RepMAF_CIFAR(nn.Module):
-    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512],
-                    act='relu', late_fusion=True, num_classes=10, **kwargs):
+    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], act='relu', 
+                    pyramid_feats=False, late_fusion=True, num_classes=10, **kwargs):
         super().__init__()
 
         self.act = act
         self.kwargs = kwargs
         self.late_fusion = late_fusion
+        self.pyramid_feats = pyramid_feats
         self.blocks_seq = blocks_seq
         self.planes_seq = planes_seq
         self.planes = planes_seq[0]
@@ -305,7 +306,8 @@ class RepMAF_CIFAR(nn.Module):
                 out_channels=planes,
                 act=self.act,
                 late_fusion=self.late_fusion,
-                sef_kwargs=self.kwargs.get('sef_kwargs', {})
+                pyramid_feats=self.pyramid_feats,
+                att_kwargs=self.kwargs.get('att_kwargs', {})
             ))
             self.planes = planes
         return nn.Sequential(*blocks)

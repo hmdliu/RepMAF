@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.modules.linear import Linear
 
 class ConvBn(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size,
@@ -25,14 +26,6 @@ class ConvBnActPool(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size,
                     stride=1, padding=0, groups=1, act='relu', pool=False):
         super().__init__()
-        act_dict = {
-            'idt': nn.Identity,
-            'gelu': nn.GELU,
-            'relu': nn.ReLU,
-            'silu': nn.SiLU,
-            'tanh': nn.Tanh,
-            'hardswish': nn.Hardswish,
-        }
         self.add_module('conv', nn.Conv2d(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -43,7 +36,7 @@ class ConvBnActPool(nn.Sequential):
             bias=False
         ))
         self.add_module('bn', nn.BatchNorm2d(out_channels))
-        self.add_module('act', act_dict[act]())
+        self.add_module('act', get_act_func(act))
         self.add_module('pool', nn.MaxPool2d(2) if pool else nn.Identity())
 
 def get_act_func(act_type='relu', **act_kwargs):
@@ -284,10 +277,12 @@ class RepMSS_Module(nn.Module):
             # return self.act(x + self.lamb1 * q), self.act(y + self.lamb2 * p), self.act(x), self.act(y)
 
 class RepMAF_Module(nn.Module):
-    def __init__(self, in_channels, out_channels, act='relu', late_fusion=True, sef_kwargs={}):
+    def __init__(self, in_channels, out_channels, act='relu', late_fusion=True, 
+                    pyramid_feats=False, att_kwargs={}):
         super().__init__()
-        self.late_fusion = late_fusion
         self.in_channels = in_channels
+        self.late_fusion = late_fusion
+        self.pyramid_feats = pyramid_feats
         self.idt_flag = (in_channels == out_channels)
         if self.idt_flag:
             self.br1_idt = nn.BatchNorm2d(out_channels)
@@ -296,9 +291,13 @@ class RepMAF_Module(nn.Module):
         self.br2_1x1 = ConvBn(in_channels, out_channels, kernel_size=1, padding=0)
         self.br1_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
         self.br2_3x3 = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
-        self.fusion = SEF_Block(out_channels, **sef_kwargs)
+        if pyramid_feats:
+            self.fusion = SEPF_Block(out_channels, **att_kwargs)
+        else:
+            self.fusion = SEF_Block(out_channels, **att_kwargs)
         self.act = get_act_func(act)
-        print('=> RepMAF Block: in_ch=%s, out_ch=%s, act=%s' % (in_channels, out_channels, act))
+        print('=> RepMAF Block: in_ch=%s, out_ch=%s, act=%s, pyramid=%s' \
+                 % (in_channels, out_channels, act, pyramid_feats))
 
     def forward(self, x):
         y = F.max_pool2d(x, kernel_size=2)
@@ -445,24 +444,184 @@ class SEM_Block(nn.Module):
         return w * x
 
 class SEF_Block(nn.Module):
-    def __init__(self, in_feats, mid_feats=16):
+    def __init__(self, in_feats, squeeze_mode=1, mid_feats=16):
         super().__init__()
-        self.squeeze = nn.Sequential(
-            nn.Conv2d(in_feats, mid_feats, kernel_size=1),
-            nn.ReLU(inplace=True)
-        )
-        self.excite1 = nn.Sequential(
-            nn.Conv2d(mid_feats, in_feats, kernel_size=1),
-            nn.Sigmoid()
-        )
-        self.excite2 = nn.Sequential(
-            nn.Conv2d(mid_feats, in_feats, kernel_size=1),
-            nn.Sigmoid()
-        )
+        self.squeeze_mode = squeeze_mode
+        if squeeze_mode == 1:
+            self.squeeze = nn.Sequential(
+                nn.Conv2d(in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+        elif squeeze_mode == 2:
+            self.squeeze = nn.Sequential(
+                nn.Conv2d(2 * in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+        elif squeeze_mode == 3:
+            self.squeeze1 = nn.Sequential(
+                nn.Conv2d(in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.squeeze2 = nn.Sequential(
+                nn.Conv2d(in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+        else:
+            self.squeeze = nn.Sequential(
+                nn.Conv2d(in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
 
     def forward(self, x, y):
+        b, _, _, _ = x.size()
         y = F.interpolate(y, scale_factor=2)
-        guide_feats = self.squeeze(F.adaptive_avg_pool2d(x+y, 1))
+        if self.squeeze_mode == 1:
+            guide_feats = self.squeeze(F.adaptive_avg_pool2d(x+y, 1))
+        elif self.squeeze_mode == 2:
+            x_ave, y_ave = F.adaptive_avg_pool2d(x, 1), F.adaptive_avg_pool2d(y, 1)
+            guide_feats = self.squeeze(torch.cat((x_ave, y_ave), dim=1))
+        elif self.squeeze_mode == 3:
+            x_ave, y_ave = F.adaptive_avg_pool2d(x, 1), F.adaptive_avg_pool2d(y, 1)
+            guide_feats = torch.cat((self.squeeze1(x_ave), self.squeeze2(y_ave)), dim=1)
+        else:
+            x_ave, y_ave = F.adaptive_avg_pool2d(x, 1), F.adaptive_avg_pool2d(y, 1)
+            f = torch.cat((x_ave, y_ave), dim=1).view(2 * b, -1, 1, 1)
+            guide_feats = self.squeeze(f).view(b, -1, 1, 1)
+        w1, w2 = self.excite1(guide_feats), self.excite2(guide_feats)
+        return w1 * x + w2 * y
+
+class SEPF_Block(nn.Module):
+    def __init__(self, in_feats, squeeze_mode=1, mid_feats=16):
+        super().__init__()
+        self.squeeze_mode = squeeze_mode
+        if squeeze_mode == 1:
+            self.squeeze = nn.Sequential(
+                nn.Conv2d(5 * in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+        elif squeeze_mode == 2:
+            self.squeeze = nn.Sequential(
+                nn.Conv2d(10 * in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+        elif squeeze_mode == 3:
+            self.squeeze1 = nn.Sequential(
+                nn.Conv2d(5 * in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.squeeze2 = nn.Sequential(
+                nn.Conv2d(5 * in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+        else:
+            self.squeeze = nn.Sequential(
+                nn.Conv2d(5 * in_feats, mid_feats, kernel_size=1),
+                nn.BatchNorm2d(mid_feats),
+                nn.ReLU(inplace=True)
+            )
+            self.excite1 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+            self.excite2 = nn.Sequential(
+                nn.Conv2d(2 * mid_feats, in_feats, kernel_size=1),
+                nn.Sigmoid()
+            )
+
+    def forward(self, x, y):
+        b, _, _, _ = x.size()
+        y = F.interpolate(y, scale_factor=2)
+        if self.squeeze_mode == 1:
+            f = x + y
+            l1 = F.adaptive_avg_pool2d(f, 1).view(b, -1, 1, 1)
+            l2 = F.adaptive_avg_pool2d(f, 2).view(b, -1, 1, 1)
+            guide_feats = self.squeeze(torch.cat((l1, l2), dim=1))
+        elif self.squeeze_mode == 2:
+            l1_x = F.adaptive_avg_pool2d(x, 1).view(b, -1, 1, 1)
+            l2_x = F.adaptive_avg_pool2d(x, 2).view(b, -1, 1, 1)
+            l1_y = F.adaptive_avg_pool2d(y, 1).view(b, -1, 1, 1)
+            l2_y = F.adaptive_avg_pool2d(y, 2).view(b, -1, 1, 1)
+            guide_feats = self.squeeze(torch.cat((l1_x, l2_x, l1_y, l2_y), dim=1))
+        elif self.squeeze_mode == 3:
+            l1_x = F.adaptive_avg_pool2d(x, 1).view(b, -1, 1, 1)
+            l2_x = F.adaptive_avg_pool2d(x, 2).view(b, -1, 1, 1)
+            l1_y = F.adaptive_avg_pool2d(y, 1).view(b, -1, 1, 1)
+            l2_y = F.adaptive_avg_pool2d(y, 2).view(b, -1, 1, 1)
+            pf_x = torch.cat((l1_x, l2_x), dim=1)
+            pf_y = torch.cat((l1_y, l2_y), dim=1)
+            guide_feats = torch.cat((self.squeeze1(pf_x), self.squeeze2(pf_y)), dim=1)
+        else:
+            l1_x = F.adaptive_avg_pool2d(x, 1).view(b, -1, 1, 1)
+            l2_x = F.adaptive_avg_pool2d(x, 2).view(b, -1, 1, 1)
+            l1_y = F.adaptive_avg_pool2d(y, 1).view(b, -1, 1, 1)
+            l2_y = F.adaptive_avg_pool2d(y, 2).view(b, -1, 1, 1)
+            f = torch.cat((l1_x, l2_x, l1_y, l2_y), dim=1).view(2 * b, -1, 1, 1)
+            guide_feats = self.squeeze(f).view(b, -1, 1, 1)
         w1, w2 = self.excite1(guide_feats), self.excite2(guide_feats)
         return w1 * x + w2 * y
 
