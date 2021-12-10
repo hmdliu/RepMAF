@@ -53,6 +53,7 @@ def get_act_func(act_type='relu', **act_kwargs):
 def get_att_block(att_type, planes, **att_kwargs):
     att_dict = {
         'se': SE_Block,
+        'sk': SK_Block,
         'sem': SEM_Block,
         'sef': SEF_Block,
         'idt': IDT_Block,
@@ -624,6 +625,60 @@ class SEPF_Block(nn.Module):
             guide_feats = self.squeeze(f).view(b, -1, 1, 1)
         w1, w2 = self.excite1(guide_feats), self.excite2(guide_feats)
         return w1 * x + w2 * y
+
+class SK_Block(nn.Module):
+    def __init__(self, in_feats, M=2, G=32, r=16, stride=1, L=16):
+        """ Constructor
+        Args:
+            in_feats: input channel dimensionality.
+            M: the number of branchs.
+            G: num of convolution groups.
+            r: the ratio for compute d, the length of z.
+            stride: stride, default 1.
+            L: the minimum dim of the vector z in paper, default 32.
+        """
+        super(SK_Block, self).__init__()
+        d = max(int(in_feats/r), L)
+        self.M = M
+        self.features = in_feats
+        self.convs = nn.ModuleList([])
+        for i in range(M):
+            self.convs.append(nn.Sequential(
+                nn.Conv2d(in_feats, in_feats, kernel_size=3, stride=stride, padding=1+i, dilation=1+i, groups=G, bias=False),
+                nn.BatchNorm2d(in_feats),
+                nn.ReLU(inplace=True)
+            ))
+        self.gap = nn.AdaptiveAvgPool2d((1,1))
+        self.fc = nn.Sequential(nn.Conv2d(in_feats, d, kernel_size=1, stride=1, bias=False),
+                                nn.BatchNorm2d(d),
+                                nn.ReLU(inplace=True))
+        self.fcs = nn.ModuleList([])
+        for i in range(M):
+            self.fcs.append(
+                 nn.Conv2d(d, in_feats, kernel_size=1, stride=1)
+            )
+        self.softmax = nn.Softmax(dim=1)
+        
+    def forward(self, x):
+        
+        batch_size = x.shape[0]
+        
+        feats = [conv(x) for conv in self.convs]      
+        feats = torch.cat(feats, dim=1)
+        feats = feats.view(batch_size, self.M, self.features, feats.shape[2], feats.shape[3])
+        
+        feats_U = torch.sum(feats, dim=1)
+        feats_S = self.gap(feats_U)
+        feats_Z = self.fc(feats_S)
+
+        attention_vectors = [fc(feats_Z) for fc in self.fcs]
+        attention_vectors = torch.cat(attention_vectors, dim=1)
+        attention_vectors = attention_vectors.view(batch_size, self.M, self.features, 1, 1)
+        attention_vectors = self.softmax(attention_vectors)
+        
+        feats_V = torch.sum(feats*attention_vectors, dim=1)
+        
+        return feats_V
 
 class SimAM_Block(torch.nn.Module):
     def __init__(self, in_feats, lamb=1e-4):
