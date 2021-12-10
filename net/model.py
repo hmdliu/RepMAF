@@ -13,6 +13,64 @@ except:
     from basic import *
     from utils import get_fwd_branch
 
+# VGG CIFAR module
+class VGG_CIFAR(nn.Module):
+    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], 
+                    act='relu', num_classes=10, **kwargs):
+        super().__init__()
+
+        self.act = act
+        self.blocks_seq = blocks_seq
+        self.planes_seq = planes_seq
+        self.planes = planes_seq[0]
+        assert len(self.blocks_seq) == len(self.planes_seq)
+
+        # Simple CONV-BN-ACT-POOL layer
+        self.block0 = ConvBnActPool(
+            in_channels=3,
+            out_channels=self.planes,
+            kernel_size=5,
+            padding=2,
+            act=act,
+            pool=kwargs.get('in_pool', True)
+        )
+        # Creating RepVGG blocks
+        for i in range(len(self.planes_seq)):
+            self.add_module('block%d' % (i+1), self._make_block(
+                planes=self.planes_seq[i],
+                num_blocks=self.blocks_seq[i]
+            ))
+        
+        self.fc = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Dropout(p=0.5),
+            nn.Flatten(),
+            nn.Linear(self.planes_seq[-1], num_classes)
+        )
+    
+    # Separate repVGG block creation
+    def _make_block(self, planes, num_blocks):
+        assert (planes > 0) and (num_blocks > 0)
+        blocks = []
+        for i in range(num_blocks):
+            blocks.append(ConvBnActPool(
+                in_channels=self.planes,
+                out_channels=planes,
+                kernel_size=3,
+                padding=1,
+                act=self.act,
+                pool=False
+            ))
+            self.planes = planes
+        return nn.Sequential(*blocks)
+
+    # Forward inference
+    def forward(self, x):
+        out = self.block0(x)
+        for i in range(len(self.planes_seq)):
+            out = self.__getattr__('block%d' % (i+1))(out)
+        return self.fc(out)
+
 # RepVGG CIFAR module
 class RepVGG_CIFAR(nn.Module):
     def __init__(self, act='relu', att='idt', att_kwargs={}, num_classes=10,
@@ -392,6 +450,7 @@ class HMDNet(nn.Module):
 def get_model(model_name, model_config): # Return model based on name and config
     avail_models = {
         'hmd': HMDNet,
+        'vgg_cifar': VGG_CIFAR,
         'repmaf_cifar': RepMAF_CIFAR,
         'repmss_cifar': RepMSS_CIFAR,
         'repdbb_cifar': RepDBB_CIFAR,
