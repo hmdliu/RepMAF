@@ -22,6 +22,37 @@ class ConvBn(nn.Sequential):
         ))
         self.add_module('bn', nn.BatchNorm2d(out_channels))
 
+class ConvAct(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size,
+                    stride=1, padding=0, groups=1, act='relu'):
+        super().__init__()
+        self.add_module('conv', nn.Conv2d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            groups=groups,
+            bias=True
+        ))
+        self.add_module('act', get_act_func(act))
+
+class ConvBnAct(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size,
+                    stride=1, padding=0, groups=1, act='relu'):
+        super().__init__()
+        self.add_module('conv', nn.Conv2d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            groups=groups,
+            bias=False
+        ))
+        self.add_module('bn', nn.BatchNorm2d(out_channels))
+        self.add_module('act', get_act_func(act))
+
 class ConvBnActPool(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size,
                     stride=1, padding=0, groups=1, act='relu', pool=False):
@@ -46,6 +77,7 @@ def get_act_func(act_type='relu', **act_kwargs):
         'relu': nn.ReLU,
         'silu': nn.SiLU,
         'tanh': nn.Tanh,
+        'sigmoid': nn.Sigmoid,
         'hardswish': nn.Hardswish,
     }
     return act_dict[act_type](**act_kwargs)
@@ -54,6 +86,7 @@ def get_att_block(att_type, planes, **att_kwargs):
     att_dict = {
         'se': SE_Block,
         'sk': SK_Block,
+        'skn': SKN_Block,
         'sem': SEM_Block,
         'sef': SEF_Block,
         'idt': IDT_Block,
@@ -278,7 +311,7 @@ class RepMSS_Module(nn.Module):
             # return self.act(x + self.lamb1 * q), self.act(y + self.lamb2 * p), self.act(x), self.act(y)
 
 class RepMAF_Module(nn.Module):
-    def __init__(self, in_channels, out_channels, act='relu', late_fusion=True, 
+    def __init__(self, in_channels, out_channels, act='relu', late_fusion=False, 
                     pyramid_feats=False, att_kwargs={}):
         super().__init__()
         self.in_channels = in_channels
@@ -431,8 +464,9 @@ class SE_Block(nn.Module):
         return w * x
 
 class SEM_Block(nn.Module):
-    def __init__(self, in_feats, mid_feats=16):
+    def __init__(self, in_feats, mid_feats=16, r=16):
         super().__init__()
+        mid_feats = max(mid_feats, in_feats // r)
         self.fc = nn.Sequential(
             nn.Conv2d(in_feats, mid_feats, kernel_size=1),
             nn.ReLU(inplace=True),
@@ -445,8 +479,9 @@ class SEM_Block(nn.Module):
         return w * x
 
 class SEF_Block(nn.Module):
-    def __init__(self, in_feats, squeeze_mode=1, mid_feats=16):
+    def __init__(self, in_feats, squeeze_mode=1, mid_feats=16, r=16):
         super().__init__()
+        mid_feats = max(mid_feats, in_feats // r)
         self.squeeze_mode = squeeze_mode
         if squeeze_mode == 1:
             self.squeeze = nn.Sequential(
@@ -680,7 +715,29 @@ class SK_Block(nn.Module):
         
         return feats_V
 
-class SimAM_Block(torch.nn.Module):
+class SKN_Block(nn.Module):
+    def __init__(self, in_feats, mid_feats=16, r=16):
+        super().__init__()
+        # mid_feats = max(mid_feats, in_feats // r)
+        mid_feats = in_feats // r
+        self.br1 = ConvBnAct(in_feats, in_feats, kernel_size=3, padding=1)
+        self.br2 = ConvBnAct(in_feats, in_feats, kernel_size=5, padding=2)
+        self.squeeze = ConvBnAct(in_feats, mid_feats, kernel_size=1)
+        self.excite1 = nn.Sequential(
+            nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+            nn.Sigmoid()
+        )
+        self.excite2 = self.excite1 = nn.Sequential(
+            nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        x1, x2 = self.br1(x), self.br2(x)
+        z = self.squeeze(F.adaptive_avg_pool2d(x1+ x2, 1))
+        return self.excite1(z) * x1 + self.excite2(z) * x2
+
+class SimAM_Block(nn.Module):
     def __init__(self, in_feats, lamb=1e-4):
         super().__init__()
         self.act = nn.Sigmoid()
