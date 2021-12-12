@@ -195,6 +195,37 @@ class RepVGG_Module(nn.Module):
         x = self.br_3x3(x) + self.br_1x1(x) + (self.br_idt(x) if self.br_idt is not None else 0)
         return self.act(self.att(x))
 
+class BiRepVGG_Module(nn.Module):
+    def __init__(self, in_channels, out_channels, act='relu', mode=1,
+                    att='idt', att_kwargs={}):
+        super().__init__()
+        self.mode = mode
+        self.in_channels = in_channels
+        self.br1 = RepVGG_Module(
+            in_channels=in_channels, 
+            out_channels=out_channels,
+            act='idt',
+            att=att,
+            att_kwargs=att_kwargs
+        )
+        self.br2 = RepVGG_Module(
+            in_channels=in_channels, 
+            out_channels=out_channels,
+            act='idt',
+            att=att,
+            att_kwargs=att_kwargs
+        )
+        self.act = get_act_func(act)
+        print('=> BiRepVGG Block: in_ch=%s, out_ch=%s, act=%s' % (in_channels, out_channels, act))
+
+    def forward(self, x):
+        if self.mode == 2:
+            x1, x2 = x, F.max_pool2d(x, kernel_size=2)
+            out = self.br1(x1) + F.interpolate(self.br1(x2), scale_factor=2)
+        else:
+            out = self.br1(x) + self.br2(x)
+        return self.act(out)
+
 class DBB_Module(nn.Module):
     def __init__(self, in_channels, out_channels, merge='add', idt_flag=True, act='relu'):
         super().__init__()
@@ -335,6 +366,7 @@ class RepMAF_Module(nn.Module):
 
     def forward(self, x):
         y = F.max_pool2d(x, kernel_size=2)
+        # y = x.clone()
         x = sum([self.br1_idt(x) if self.idt_flag else 0, self.br1_1x1(x), self.br1_3x3(x)])
         y = sum([self.br2_idt(y) if self.idt_flag else 0, self.br2_1x1(y), self.br2_3x3(y)])
         if self.late_fusion:
@@ -481,7 +513,8 @@ class SEM_Block(nn.Module):
 class SEF_Block(nn.Module):
     def __init__(self, in_feats, squeeze_mode=1, mid_feats=16, r=16):
         super().__init__()
-        mid_feats = max(mid_feats, in_feats // r)
+        # mid_feats = max(mid_feats, in_feats // r)
+        mid_feats = in_feats // r
         self.squeeze_mode = squeeze_mode
         if squeeze_mode == 1:
             self.squeeze = nn.Sequential(
@@ -547,7 +580,8 @@ class SEF_Block(nn.Module):
 
     def forward(self, x, y):
         b, _, _, _ = x.size()
-        y = F.interpolate(y, scale_factor=2)
+        if x.size() != y.size():
+            y = F.interpolate(y, scale_factor=2)
         if self.squeeze_mode == 1:
             guide_feats = self.squeeze(F.adaptive_avg_pool2d(x+y, 1))
         elif self.squeeze_mode == 2:
