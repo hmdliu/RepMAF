@@ -87,6 +87,7 @@ def get_att_block(att_type, planes, **att_kwargs):
         'se': SE_Block,
         'sk': SK_Block,
         'skn': SKN_Block,
+        'ses': SES_Block,
         'sem': SEM_Block,
         'sef': SEF_Block,
         'idt': IDT_Block,
@@ -503,6 +504,18 @@ class SEM_Block(nn.Module):
             nn.Conv2d(in_feats, mid_feats, kernel_size=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(mid_feats, in_feats, kernel_size=1),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        w = self.fc(F.adaptive_avg_pool2d(x, 1))
+        return w * x
+
+class SES_Block(nn.Module):
+    def __init__(self, in_feats):
+        super().__init__()
+        self.fc = nn.Sequential(
+            nn.Conv2d(in_feats, in_feats, kernel_size=1),
             nn.Sigmoid()
         )
 
