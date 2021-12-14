@@ -1,5 +1,81 @@
 
 import random
+import torch.nn as nn
+
+class ConvBn(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size,
+                    stride=1, padding=0, groups=1):
+        super().__init__()
+        self.add_module('conv', nn.Conv2d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            groups=groups,
+            bias=False
+        ))
+        self.add_module('bn', nn.BatchNorm2d(out_channels))
+
+class ConvAct(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size,
+                    stride=1, padding=0, groups=1, act='relu'):
+        super().__init__()
+        self.add_module('conv', nn.Conv2d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            groups=groups,
+            bias=True
+        ))
+        self.add_module('act', get_act_func(act))
+
+class ConvBnAct(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size,
+                    stride=1, padding=0, groups=1, act='relu'):
+        super().__init__()
+        self.add_module('conv', nn.Conv2d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            groups=groups,
+            bias=False
+        ))
+        self.add_module('bn', nn.BatchNorm2d(out_channels))
+        self.add_module('act', get_act_func(act))
+
+class ConvBnActPool(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size,
+                    stride=1, padding=0, groups=1, act='relu', pool=False):
+        super().__init__()
+        self.add_module('conv', nn.Conv2d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            groups=groups,
+            bias=False
+        ))
+        self.add_module('bn', nn.BatchNorm2d(out_channels))
+        self.add_module('act', get_act_func(act))
+        self.add_module('pool', nn.MaxPool2d(2) if pool else nn.Identity())
+
+def get_act_func(act_type='relu', **act_kwargs):
+    act_dict = {
+        'idt': nn.Identity,
+        'gelu': nn.GELU,
+        'relu': nn.ReLU,
+        'silu': nn.SiLU,
+        'tanh': nn.Tanh,
+        'sigmoid': nn.Sigmoid,
+        'hardswish': nn.Hardswish,
+    }
+    return act_dict[act_type](**act_kwargs)
 
 class Poly_LR_Scheduler(object):
     def __init__(self, base_lr, num_epochs, iters_per_epoch,

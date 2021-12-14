@@ -143,20 +143,11 @@ class Trainer():
         print('Val Accuracy:   %.2f%s\tVal Loss:   %.6f' % (val_acc, '%', val_loss))
         if val_acc > self.best_pred:
             self.best_pred = val_acc
-        if val_acc > self.config['export_bound']:
-            self.export_weights(val_acc)
         if self.config['dump_summary']:
             self.writer.add_scalar('accuracy/train', train_acc, self.curr_epoch)
             self.writer.add_scalar('loss/train', train_loss, self.curr_epoch)
             self.writer.add_scalar('accuracy/val', val_acc, self.curr_epoch)
             self.writer.add_scalar('loss/val', val_loss, self.curr_epoch)
-    
-    # Save weights
-    def export_weights(self, accuracy):
-        curr_info = '%02d_%.2f' % (self.curr_epoch, accuracy)
-        weight_path = os.path.join(self.path, 'weights_%s.pth' % curr_info)
-        torch.save(self.model.state_dict(), weight_path)
-        print('[Weights]: [%s] state dict exported.' % (curr_info))
 
     # Training on all epoches
     def train(self):
@@ -164,14 +155,18 @@ class Trainer():
             print('\n============ train epoch [%2d/%2d] =================' % (epoch, self.config['epochs']))
             self.train_one_epoch(epoch)
             print('==================================================')
+        if self.config['export_best']:
+            weight_path = os.path.join(self.path, 'weights_%.2f.pth' % self.best_pred)
+            torch.save(self.model.state_dict(), weight_path)
+            print('[Weights]: best state dict exported.')
         runtime = int(time.time() - self.start_time) / 60
         print('\n[Time]: %d mins\n[Best Pred]: %.2f%s' % (runtime, self.best_pred, '%'))
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:               # More than 1 parameter
+    if len(sys.argv) > 2:
         print('testing mode...')
         CONFIG['use_cuda'] = False
         CONFIG['batch_size'] = 2
     print(sys.argv)
-    trainer = Trainer(config=CONFIG)    # Initialize trainer
-    trainer.train()                     # Start training
+    trainer = Trainer(config=CONFIG)    # init trainer
+    trainer.train()                     # training
