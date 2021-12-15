@@ -31,6 +31,28 @@ TEMPLATE = {
 def get_config(info):
     # To be completed
     config = deepcopy(TEMPLATE)
+    date, setting = tuple(info.split('_'))
+
+    att_config = {
+        # repvgg
+        'i': {'act': 'relu', 'att': 'idt'},
+        'e': {'act': 'relu', 'att': 'se'},
+        't': {'act': 'relu', 'att': 'ses'},
+        # birepvgg
+        'a': {'act': 'relu', 'att': 'idt', 'fwd_size': (16, 8)},
+        'b': {'act': 'relu', 'att': 'idt', 'fwd_size': (16, 16)},
+        'c': {'act': 'relu', 'att': 'se', 'fwd_size': (16, 8)},
+        'd': {'act': 'relu', 'att': 'se', 'fwd_size': (16, 16)},
+        
+    }
+    config['epochs'] = 150
+
+    config['model'] = 'birepvgg'
+    # config['model'] = 'repmaf'
+    # config['model'] = 'repvgg'
+    # config['model'] = 'vgg'
+    config['model_config'] = att_config[setting[0]]
+
     return config
 
 if __name__ == '__main__':

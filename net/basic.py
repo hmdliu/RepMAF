@@ -17,7 +17,7 @@ def get_att_block(att_type, planes, **att_kwargs):
         'se': SE_Block,
         'idt': IDT_Block,
         'ses': SES_Block,
-        'sef': SEF_Block,
+        'maf': MAF_Block,
     }
     return att_dict[att_type](planes, **att_kwargs)
 
@@ -143,7 +143,7 @@ class RepMAF_Module(nn.Module):
         self.fwd_size = fwd_size
         self.br1 = RepVGG_Module(in_channels, out_channels, att='idt', act='idt')
         self.br2 = RepVGG_Module(in_channels, out_channels, att='idt', act='idt')
-        self.fusion = SEF_Block(out_channels, **att_kwargs)
+        self.fusion = MAF_Block(out_channels, **att_kwargs)
         self.act = get_act_func(act)
         print('=> RepMAF Block: in_ch=%s, out_ch=%s, act=%s' % (in_channels, out_channels, act))
 
@@ -184,7 +184,7 @@ class SES_Block(nn.Module):
         w = self.fc(F.adaptive_avg_pool2d(x, 1))
         return w * x
 
-class SEF_Block(nn.Module):
+class MAF_Block(nn.Module):
     def __init__(self, in_feats, version=1, r=16):
         super().__init__()
         mid_feats = in_feats // r
