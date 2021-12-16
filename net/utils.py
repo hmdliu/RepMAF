@@ -1,6 +1,7 @@
 
 import torch.nn as nn
 
+# conv & batch norm
 class ConvBn(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size,
                     stride=1, padding=0, groups=1):
@@ -16,6 +17,7 @@ class ConvBn(nn.Sequential):
         ))
         self.add_module('bn', nn.BatchNorm2d(out_channels))
 
+# conv & activation
 class ConvAct(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size,
                     stride=1, padding=0, groups=1, act='relu'):
@@ -31,6 +33,7 @@ class ConvAct(nn.Sequential):
         ))
         self.add_module('act', get_act_func(act))
 
+# conv & batch norm & activation
 class ConvBnAct(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size,
                     stride=1, padding=0, groups=1, act='relu'):
@@ -47,6 +50,7 @@ class ConvBnAct(nn.Sequential):
         self.add_module('bn', nn.BatchNorm2d(out_channels))
         self.add_module('act', get_act_func(act))
 
+# conv & batch norm & activation & pooling
 class ConvBnActPool(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size,
                     stride=1, padding=0, groups=1, act='relu', pool=False):
@@ -64,6 +68,7 @@ class ConvBnActPool(nn.Sequential):
         self.add_module('act', get_act_func(act))
         self.add_module('pool', nn.MaxPool2d(2) if pool else nn.Identity())
 
+# create a activation function
 def get_act_func(act_type='relu', **act_kwargs):
     act_dict = {
         'idt': nn.Identity,
@@ -76,6 +81,7 @@ def get_act_func(act_type='relu', **act_kwargs):
     }
     return act_dict[act_type](**act_kwargs)
 
+# polynomial learning rate scheduler
 class Poly_LR_Scheduler(object):
     def __init__(self, base_lr, num_epochs, iters_per_epoch,
                     base_poly=0.9, thresh=1e-6, quiet=False):

@@ -12,6 +12,7 @@ except:
     # calling from __main__
     from utils import *
 
+# create a attention block with given kwargs
 def get_att_block(att_type, planes, **att_kwargs):
     att_dict = {
         'se': SE_Block,
@@ -21,6 +22,19 @@ def get_att_block(att_type, planes, **att_kwargs):
     }
     return att_dict[att_type](planes, **att_kwargs)
 
+# VGG_CIFAR building block
+class VGG_Module(nn.Module):
+    def __init__(self, in_channels, out_channels, act='relu', att='idt', att_kwargs={}):
+        super().__init__()
+        self.vgg = ConvBn(in_channels, out_channels, kernel_size=3, padding=1)
+        self.att = get_att_block(att, out_channels, **att_kwargs)
+        self.act = get_act_func(act)
+        print('=> RepVGG Block: in_ch=%s, out_ch=%s, act=%s' % (in_channels, out_channels, act))
+    
+    def forward(self, x):
+        return self.act(self.att(self.vgg(x)))
+
+# RepVGG_CIFAR building block
 class RepVGG_Module(nn.Module):
     def __init__(self, in_channels, out_channels, act='relu', att='idt', att_kwargs={}):
         super().__init__()
@@ -106,6 +120,7 @@ class RepVGG_Module(nn.Module):
         x = self.br_3x3(x) + self.br_1x1(x) + (self.br_idt(x) if self.br_idt is not None else 0)
         return self.act(self.att(x))
 
+# BiRepVGG_CIFAR building block
 class BiRepVGG_Module(nn.Module):
     def __init__(self, in_channels, out_channels, act='relu', fwd_size=(16, 8),
                     att='idt', att_kwargs={}):
@@ -137,6 +152,7 @@ class BiRepVGG_Module(nn.Module):
             out = self.br1(x) + self.br2(x)
         return self.act(out)
 
+# RepMAF_CIFAR building block
 class RepMAF_Module(nn.Module):
     def __init__(self, in_channels, out_channels, act='relu', fwd_size=(16, 8), att_kwargs={}):
         super().__init__()
@@ -151,6 +167,7 @@ class RepMAF_Module(nn.Module):
         y = F.max_pool2d(x, kernel_size=2) if self.fwd_size == (16, 8) else x.clone()
         return self.act(self.fusion(self.br1(x), self.br2(y)))
 
+# identity attention block
 class IDT_Block(nn.Module):
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -158,6 +175,7 @@ class IDT_Block(nn.Module):
     def forward(self, x):
         return x
 
+# squeeze-and-exitation block
 class SE_Block(nn.Module):
     def __init__(self, in_feats, r=16):
         super().__init__()
@@ -172,6 +190,7 @@ class SE_Block(nn.Module):
         w = self.fc(F.adaptive_avg_pool2d(x, 1))
         return w * x
 
+# squeeze-and-exitation block (single layer)
 class SES_Block(nn.Module):
     def __init__(self, in_feats):
         super().__init__()
@@ -184,6 +203,7 @@ class SES_Block(nn.Module):
         w = self.fc(F.adaptive_avg_pool2d(x, 1))
         return w * x
 
+# multi-scale attention fusion block
 class MAF_Block(nn.Module):
     def __init__(self, in_feats, version=1, r=16):
         super().__init__()

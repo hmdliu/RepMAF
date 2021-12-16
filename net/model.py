@@ -12,17 +12,31 @@ except:
     from basic import *
     from utils import *
 
+"""
+Common arguments for the models:
+blocks_seq: num of building blocks per stage (dafault: [1, 3, 4, 1])
+planes_seq: num of channels for each stage (dafault: [64, 128, 256, 512])
+att: attention module (dafault: identity)
+att_kwargs: attention module kwargs (dafault: {})
+act: activation function (dafault: relu)
+num_classes: num of classes for classification (dafault: 10)
+fwd_size: feature map size in different branchs ((16, 16), (16, 8), (8, 8))
+"""
+
 class VGG_CIFAR(nn.Module):
-    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512], 
-                    act='relu', num_classes=10, **kwargs):
+    def __init__(self, blocks_seq=[1, 3, 4, 1], planes_seq=[64, 128, 256, 512],
+                    act='relu', att='idt', att_kwargs={}, num_classes=10, **kwargs):
         super().__init__()
 
         self.act = act
+        self.att = att
+        self.att_kwargs = att_kwargs
         self.blocks_seq = blocks_seq
         self.planes_seq = planes_seq
         self.planes = planes_seq[0]
         assert len(self.blocks_seq) == len(self.planes_seq)
 
+        # input block
         self.block0 = ConvBnActPool(
             in_channels=3,
             out_channels=self.planes,
@@ -37,6 +51,7 @@ class VGG_CIFAR(nn.Module):
                 num_blocks=self.blocks_seq[i]
             ))
         
+        # simple linear classifier
         self.fc = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Dropout(p=0.5),
@@ -44,16 +59,17 @@ class VGG_CIFAR(nn.Module):
             nn.Linear(self.planes_seq[-1], num_classes)
         )
     
+    # create building blocks for each stage
     def _make_block(self, planes, num_blocks):
         assert (planes > 0) and (num_blocks > 0)
         blocks = []
         for i in range(num_blocks):
-            blocks.append(ConvBnAct(
+            blocks.append(VGG_Module(
                 in_channels=self.planes,
                 out_channels=planes,
-                kernel_size=3,
-                padding=1,
-                act=self.act
+                act=self.act,
+                att=self.att,
+                att_kwargs=self.att_kwargs
             ))
             self.planes = planes
         return nn.Sequential(*blocks)
@@ -77,6 +93,7 @@ class RepVGG_CIFAR(nn.Module):
         self.planes = planes_seq[0]
         assert len(self.blocks_seq) == len(self.planes_seq)
 
+        # input block
         self.block0 = ConvBnActPool(
             in_channels=3,
             out_channels=self.planes,
@@ -91,6 +108,7 @@ class RepVGG_CIFAR(nn.Module):
                 num_blocks=self.blocks_seq[i]
             ))
         
+        # simple linear classifier
         self.fc = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Dropout(p=0.5),
@@ -98,6 +116,7 @@ class RepVGG_CIFAR(nn.Module):
             nn.Linear(self.planes_seq[-1], num_classes)
         )
     
+    # create building blocks for each stage
     def _make_block(self, planes, num_blocks):
         assert (planes > 0) and (num_blocks > 0)
         blocks = []
@@ -132,6 +151,7 @@ class BiRepVGG_CIFAR(nn.Module):
         self.planes = planes_seq[0]
         assert len(self.blocks_seq) == len(self.planes_seq)
 
+        # input block
         self.block0 = ConvBnActPool(
             in_channels=3,
             out_channels=self.planes,
@@ -146,6 +166,7 @@ class BiRepVGG_CIFAR(nn.Module):
                 num_blocks=self.blocks_seq[i]
             ))
         
+        # simple linear classifier
         self.fc = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Dropout(p=0.5),
@@ -153,6 +174,7 @@ class BiRepVGG_CIFAR(nn.Module):
             nn.Linear(self.planes_seq[-1], num_classes)
         )
     
+    # create building blocks for each stage
     def _make_block(self, planes, num_blocks):
         assert (planes > 0) and (num_blocks > 0)
         blocks = []
@@ -189,6 +211,7 @@ class RepMAF_CIFAR(nn.Module):
         self.planes = planes_seq[0]
         assert len(self.blocks_seq) == len(self.planes_seq)
 
+        # input block
         self.block0 = ConvBnActPool(
             in_channels=3,
             out_channels=self.planes,
@@ -203,6 +226,7 @@ class RepMAF_CIFAR(nn.Module):
                 num_blocks=self.blocks_seq[i]
             ))
         
+        # simple linear classifier
         self.fc = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Dropout(p=0.5),
@@ -210,6 +234,7 @@ class RepMAF_CIFAR(nn.Module):
             nn.Linear(self.planes_seq[-1], num_classes)
         )
     
+    # create building blocks for each stage
     def _make_block(self, planes, num_blocks):
         assert (planes > 0) and (num_blocks > 0)
         blocks = []
@@ -231,6 +256,7 @@ class RepMAF_CIFAR(nn.Module):
             out = self.__getattr__('block%d' % (i+1))(out)
         return self.fc(out)
 
+# create a model based on given config
 def get_model(model_name, model_config):
     avail_models = {
         'vgg': VGG_CIFAR,

@@ -1,4 +1,10 @@
 
+"""
+Util functions to check & archive log files
+[Dump Accuracy]: python helper.py dump
+[Archive Logs]: python helper.py log move
+"""
+
 import os
 import sys
 from shutil import move

@@ -8,8 +8,10 @@
 #SBATCH --gres=gpu
 #SBATCH --job-name=torch
 
+# clear all modules
 module purge
 
+# call singularity env
 singularity exec --nv \
 	    --overlay /scratch/hl3797/GACV-F2021/pytorch1.8.0-cuda11.1.ext3:ro \
 	    /scratch/work/public/singularity/cuda11.1-cudnn8-devel-ubuntu18.04.sif \

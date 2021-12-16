@@ -1,26 +1,26 @@
-# Standard modules
+# standard modules
 import os
 import sys
 import time
 import random
 import numpy as np
-# Torch modules
+# torch modules
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 from torchsummary import summary
-# Custom modules
+# custom modules
 from net.utils import *
 from net.model import get_model
 from net.dataset import get_dataset
 from config import get_config
 
 PATH = os.getcwd()
-EXP_ID = sys.argv[1] # 1st param, experiment ID
-DATE = EXP_ID.split('_')[0] # Dte of experiment
-CONFIG = get_config(EXP_ID) # Get model configurations
+EXP_ID = sys.argv[1]            # 1st param, experiment ID
+MODEL = EXP_ID.split('-')[0]    # model of experiment
+CONFIG = get_config(EXP_ID)     # get model configurations
 
 class Trainer():
     def __init__(self, config):
@@ -29,7 +29,7 @@ class Trainer():
         # init trainer
         self.best_pred = 0.0
         self.start_time = time.time()
-        self.path = os.path.join(PATH, 'results', DATE, EXP_ID)
+        self.path = os.path.join(PATH, 'results', MODEL, EXP_ID)
         if not os.path.isdir(self.path):
             os.makedirs(self.path)
         self.init_seed(self.config['seed'])
@@ -93,14 +93,14 @@ class Trainer():
         if self.config['dump_summary']:
             self.writer = SummaryWriter(self.path)
 
-    # Initialize seed
+    # init random seed
     def init_seed(self, seed):
         random.seed(seed)
         np.random.seed(seed)
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
 
-    # Each epoch
+    # train for a single epoch
     def train_one_epoch(self, epoch):
         self.model.train()
         self.curr_epoch = epoch
@@ -120,7 +120,7 @@ class Trainer():
                 ))
         self.check_accuracy()
 
-    # Evaluate current epoch
+    # evaluate current model
     def eval(self, data_loader):
         self.model.eval()
         loss, correct = 0, 0
@@ -135,7 +135,7 @@ class Trainer():
         loss /= len(data_loader.dataset)
         return accuracy, loss
     
-    # Print each epoch accuracy
+    # print accuracy per epoch
     def check_accuracy(self):
         train_acc, train_loss = self.eval(self.train_loader)
         val_acc, val_loss = self.eval(self.val_loader)
@@ -149,7 +149,7 @@ class Trainer():
             self.writer.add_scalar('accuracy/val', val_acc, self.curr_epoch)
             self.writer.add_scalar('loss/val', val_loss, self.curr_epoch)
 
-    # Training on all epoches
+    # main function for training
     def train(self):
         for epoch in range(1, self.config['epochs']+1):
             print('\n============ train epoch [%2d/%2d] =================' % (epoch, self.config['epochs']))
