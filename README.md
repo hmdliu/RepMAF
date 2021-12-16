@@ -25,9 +25,13 @@ python train.py [exp_id]
 Training log can be found in \[exp_id\].log
 
 ## Experiment IDs
-The IDs follow the original order in the report.
+The IDs follow the original order in the report. \
+\
 **Table 1**: vgg-idt, vgg-se, repvgg-idt, repvgg-se,birepvgg-idt3, birepvgg-se3, repmaf-maf3, repmaf-maf4. \
-**Table 2**: repvgg-idt, repvgg-ses, repvgg-se. (Note: To disable data augmentation, please set config\['aug'\] = False in config.py.) \
+\
+**Table 2**: repvgg-idt, repvgg-ses, repvgg-se. \
+(**Note:** To disable data augmentation, please set config\['aug'\] = False in *config.py*.) \
+\
 **Table 3**: repvgg-se3, repvgg-se2, repvgg-se1, repvgg-se3, repmaf-maf5, repmaf-maf3, repmaf-maf1, repmaf-maf6, repmaf-maf4, repmaf-maf2. 
 
 ## Inference speed test
