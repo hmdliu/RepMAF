@@ -1,13 +1,13 @@
 ## RepMAF: When Re-parameterization Meets Multi-scale Attention
 
-CSCI-GA 2271: Computer Vision - Final Project (Tutored by Prof. Rub Fergus)
+CSCI-GA 2271: Computer Vision - Final Project (Tutored by Prof. Rob Fergus)
 
 ## Setup
 **Requisites:** numpy, torch, torchvision, torchsummary. \
 Clone the project repo:
 ```
-git clone https://github.com/hmdliu/SRep -b final
-cd SRep
+git clone https://github.com/hmdliu/RepMAF -b final
+cd RepMAF
 ```
 The dataset will be automatically downloaded while training.
 
