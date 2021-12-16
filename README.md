@@ -10,6 +10,11 @@ Clone the project repo:
 git clone https://github.com/hmdliu/RepMAF -b final
 cd RepMAF
 ```
+Download the CIFAR-10 dataset:
+```
+python prep_dataset.py
+rm cifar-10-python.tar.gz
+```
 
 ## Training script
 1) On a HPC with a singlularity env and slurm:
@@ -23,12 +28,6 @@ sbatch train.SBATCH [exp_id]
 python train.py [exp_id] > [exp_id].log 2>&1 
 ```
 Training log can be found in \[exp_id\].log \
-\
-In general, the dataset will be automatically downloaded while training. However, if you still encounter problems, please download it in command line instead:
-```
-python train.py vgg-idt test
-```
-Press Cmd/Ctrl + C to stop the program if you see "Files already downloaded and verified" in the output, which means the dataset has been downloaded.
 
 ## Experiment IDs
 The IDs follow the original order in the report. \
