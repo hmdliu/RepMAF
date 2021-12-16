@@ -1,7 +1,7 @@
 ## RepMAF: When Re-parameterization Meets Multi-scale Attention
 
 CSCI-GA 2271: Computer Vision - Final Project (Tutored by Prof. Rob Fergus) \
-**Group Members:** Haoming Liu, Chen Song Zhang, Jiayao Jin.
+Group Members: Haoming Liu, Chen Song Zhang, Jiayao Jin.
 
 ## Setup
 **Requisites:** numpy, torch, torchvision, torchsummary. \
