@@ -1,0 +1,1130 @@
+Files already downloaded and verified
+Files already downloaded and verified
+[model_id]: vgg-idt
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3569 imgs/s
+
+[model_id]: vgg-idt
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3604 imgs/s
+
+[model_id]: vgg-idt
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3579 imgs/s
+
+[model_id]: vgg-se
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3335 imgs/s
+
+[model_id]: vgg-se
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3356 imgs/s
+
+[model_id]: vgg-se
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3341 imgs/s
+
+[model_id]: repvgg-idt
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2972 imgs/s
+
+[rep]: 3558 imgs/s
+
+[model_id]: repvgg-idt
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2965 imgs/s
+
+[rep]: 3555 imgs/s
+
+[model_id]: repvgg-idt
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2963 imgs/s
+
+[rep]: 3532 imgs/s
+
+[model_id]: repvgg-se
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2798 imgs/s
+
+[rep]: 3356 imgs/s
+
+[model_id]: repvgg-se
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2803 imgs/s
+
+[rep]: 3362 imgs/s
+
+[model_id]: repvgg-se
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2807 imgs/s
+
+[rep]: 3344 imgs/s
+
+[model_id]: birepvgg-idt3
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1658 imgs/s
+
+[rep]: 2044 imgs/s
+
+[model_id]: birepvgg-idt3
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1660 imgs/s
+
+[rep]: 2042 imgs/s
+
+[model_id]: birepvgg-idt3
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1666 imgs/s
+
+[rep]: 2041 imgs/s
+
+[model_id]: birepvgg-se3
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1562 imgs/s
+
+[rep]: 1906 imgs/s
+
+[model_id]: birepvgg-se3
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1561 imgs/s
+
+[rep]: 1908 imgs/s
+
+[model_id]: birepvgg-se3
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1562 imgs/s
+
+[rep]: 1906 imgs/s
+
+[model_id]: repmaf-maf3
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2206 imgs/s
+
+[rep]: 2666 imgs/s
+
+[model_id]: repmaf-maf3
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2192 imgs/s
+
+[rep]: 2669 imgs/s
+
+[model_id]: repmaf-maf3
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2213 imgs/s
+
+[rep]: 2666 imgs/s
+
+[model_id]: repmaf-maf4
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2204 imgs/s
+
+[rep]: 2688 imgs/s
+
+[model_id]: repmaf-maf4
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2211 imgs/s
+
+[rep]: 2684 imgs/s
+
+[model_id]: repmaf-maf4
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2209 imgs/s
+
+[rep]: 2692 imgs/s
+
+[model_id]: vgg-idt
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3581 imgs/s
+
+[model_id]: vgg-idt
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3565 imgs/s
+
+[model_id]: vgg-idt
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3580 imgs/s
+
+[model_id]: vgg-se
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3345 imgs/s
+
+[model_id]: vgg-se
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3349 imgs/s
+
+[model_id]: vgg-se
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 3343 imgs/s
+
+[model_id]: repvgg-idt
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2959 imgs/s
+
+[rep]: 3540 imgs/s
+
+[model_id]: repvgg-idt
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2958 imgs/s
+
+[rep]: 3549 imgs/s
+
+[model_id]: repvgg-idt
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2968 imgs/s
+
+[rep]: 3538 imgs/s
+
+[model_id]: repvgg-se
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2799 imgs/s
+
+[rep]: 3348 imgs/s
+
+[model_id]: repvgg-se
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2812 imgs/s
+
+[rep]: 3328 imgs/s
+
+[model_id]: repvgg-se
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2791 imgs/s
+
+[rep]: 3336 imgs/s
+
+[model_id]: birepvgg-idt3
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1663 imgs/s
+
+[rep]: 2037 imgs/s
+
+[model_id]: birepvgg-idt3
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1662 imgs/s
+
+[rep]: 2040 imgs/s
+
+[model_id]: birepvgg-idt3
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1662 imgs/s
+
+[rep]: 2043 imgs/s
+
+[model_id]: birepvgg-se3
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1563 imgs/s
+
+[rep]: 1909 imgs/s
+
+[model_id]: birepvgg-se3
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1561 imgs/s
+
+[rep]: 1909 imgs/s
+
+[model_id]: birepvgg-se3
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> BiRepVGG Block: in_ch=256, out_ch=512, act=relu
+[ori]: 1565 imgs/s
+
+[rep]: 1906 imgs/s
+
+[model_id]: repmaf-maf3
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2195 imgs/s
+
+[rep]: 2648 imgs/s
+
+[model_id]: repmaf-maf3
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2213 imgs/s
+
+[rep]: 2668 imgs/s
+
+[model_id]: repmaf-maf3
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2209 imgs/s
+
+[rep]: 2653 imgs/s
+
+[model_id]: repmaf-maf4
+[iter_num]: 0
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2206 imgs/s
+
+[rep]: 2652 imgs/s
+
+[model_id]: repmaf-maf4
+[iter_num]: 1
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2215 imgs/s
+
+[rep]: 2651 imgs/s
+
+[model_id]: repmaf-maf4
+[iter_num]: 2
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepVGG Block: in_ch=64, out_ch=64, act=idt
+=> RepMAF Block: in_ch=64, out_ch=64, act=relu
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepVGG Block: in_ch=64, out_ch=128, act=idt
+=> RepMAF Block: in_ch=64, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepVGG Block: in_ch=128, out_ch=128, act=idt
+=> RepMAF Block: in_ch=128, out_ch=128, act=relu
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepVGG Block: in_ch=128, out_ch=256, act=idt
+=> RepMAF Block: in_ch=128, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepVGG Block: in_ch=256, out_ch=256, act=idt
+=> RepMAF Block: in_ch=256, out_ch=256, act=relu
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepVGG Block: in_ch=256, out_ch=512, act=idt
+=> RepMAF Block: in_ch=256, out_ch=512, act=relu
+[ori]: 2203 imgs/s
+
+[rep]: 2691 imgs/s
+
